@@ -1,0 +1,35 @@
+---
+title:  "Welcome to our cybersecurity blog"
+date:   2023-05-07 05:00:00 +0300
+header:
+  teaser: "/assets/images/1/welcome.png"
+categories: 
+  - tutorial
+tags:
+  - redteam
+  - blueteam
+  - purpleteam
+  - pentest
+  - malware
+---
+
+Welcome to our cybersecurity blog!          
+
+![welcome](/assets/images/1/welcome.png){:class="img-responsive"}      
+
+We will describe techniques for the successful work of the red team, the blue team, threat hunting, research and case studies about penetration testing and programming exploits. This blog will include our investigations into cybersecurity incidents and malware analysis.        
+
+Also, our open source projects will be described here. We will provide the full source codes and we hope it will be a good contribution to the cybersecurity community:    
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello World!";
+    return 0;
+}
+```
+
+If you have questions, you can ask them on our [email](mailto:info@mssp.global).
+
+Our Github repo: [https://github.com/MSSPLab](https://github.com/MSSPLab)          

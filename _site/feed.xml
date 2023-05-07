@@ -1,1 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-05-07T17:27:11+06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author></feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-05-08T01:54:27+06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Welcome to our cybersecurity blog</title><link href="http://localhost:4000/tutorial/2023/05/07/welcome.html" rel="alternate" type="text/html" title="Welcome to our cybersecurity blog" /><published>2023-05-07T08:00:00+06:00</published><updated>2023-05-07T08:00:00+06:00</updated><id>http://localhost:4000/tutorial/2023/05/07/welcome</id><content type="html" xml:base="http://localhost:4000/tutorial/2023/05/07/welcome.html">&lt;p&gt;Welcome to our cybersecurity blog!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/1/welcome.png&quot; alt=&quot;welcome&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We will describe techniques for the successful work of the red team, the blue team, threat hunting, research and case studies about penetration testing and programming exploits. This blog will include our investigations into cybersecurity incidents and malware analysis.&lt;/p&gt;
+
+&lt;p&gt;Also, our open source projects will be described here. We will provide the full source codes and we hope it will be a good contribution to the cybersecurity community:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;iostream&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello World!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you have questions, you can ask them on our &lt;a href=&quot;mailto:info@mssp.global&quot;&gt;email&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Our Github repo: &lt;a href=&quot;https://github.com/MSSPLab&quot;&gt;https://github.com/MSSPLab&lt;/a&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="tutorial" /><category term="redteam" /><category term="blueteam" /><category term="purpleteam" /><category term="pentest" /><category term="malware" /><summary type="html">Welcome to our cybersecurity blog!</summary></entry></feed>
