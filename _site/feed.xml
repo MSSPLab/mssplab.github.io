@@ -1,4 +1,485 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-05-08T01:54:27+06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Welcome to our cybersecurity blog</title><link href="http://localhost:4000/tutorial/2023/05/07/welcome.html" rel="alternate" type="text/html" title="Welcome to our cybersecurity blog" /><published>2023-05-07T08:00:00+06:00</published><updated>2023-05-07T08:00:00+06:00</updated><id>http://localhost:4000/tutorial/2023/05/07/welcome</id><content type="html" xml:base="http://localhost:4000/tutorial/2023/05/07/welcome.html">&lt;p&gt;Welcome to our cybersecurity blog!&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-05-08T12:31:17+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware analysis report: WinDealer (LuoYu Threat Group)</title><link href="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html" rel="alternate" type="text/html" title="Malware analysis report: WinDealer (LuoYu Threat Group)" /><published>2023-05-08T05:00:00+03:00</published><updated>2023-05-08T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html">&lt;p&gt;WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-05-08_12-08.png&quot; alt=&quot;windealer&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Following are the capabilities of the malware:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Manipulation of files and file systems: reading, writing, and deleting files, listing directories, and collecting disk information&lt;/li&gt;
+  &lt;li&gt;Information collection: gathering device details, network settings, and/or keyboard layout, listing running processes, installed software, and configuration files of popular messaging services (Skype, QQ, WeChat, and Wangwang);&lt;/li&gt;
+  &lt;li&gt;Download and upload random file types; arbitrarily executed commands;&lt;/li&gt;
+  &lt;li&gt;System-wide text file and Microsoft Word document search;&lt;/li&gt;
+  &lt;li&gt;Screenshot taking;&lt;/li&gt;
+  &lt;li&gt;Discovery of networks through ping scan;&lt;/li&gt;
+  &lt;li&gt;Backdoor maintenance: enabling or disabling persistence (through the RUN key in the registry) and configuration changes&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;threat-actor&quot;&gt;Threat actor&lt;/h3&gt;
+
+&lt;p&gt;LuoYu is a threat group that is believed to be a Chinese state-sponsored hacking group. The group has been active since at least 2011 and is known to target a wide range of industries, including defense, government, telecommunications, and technology.&lt;/p&gt;
+
+&lt;h3 id=&quot;target&quot;&gt;Target&lt;/h3&gt;
+
+&lt;p&gt;&lt;em&gt;Geographies and sectors&lt;/em&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Chinese subsidiaries of Japanese companies&lt;/li&gt;
+  &lt;li&gt;Users of a Chinese private bank&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;Industry&lt;/em&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Technology&lt;/li&gt;
+  &lt;li&gt;Media&lt;/li&gt;
+  &lt;li&gt;Financial&lt;/li&gt;
+  &lt;li&gt;Military&lt;/li&gt;
+  &lt;li&gt;Telecom&lt;/li&gt;
+  &lt;li&gt;Ministries of Foreign Affairs&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;cyber-kill-chain&quot;&gt;Cyber Kill Chain&lt;/h3&gt;
+
+&lt;p&gt;WinDealer steals information of an infected &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PC&lt;/code&gt; and sends it to a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C2&lt;/code&gt; server as described in here:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_21-53.png&quot; alt=&quot;ckc&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;identification&quot;&gt;Identification&lt;/h3&gt;
+
+&lt;p&gt;Two samples are being investigated:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;sample.exe&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;File size: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;372736 bytes&lt;/code&gt;  &lt;br /&gt;
+MD5 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cc7207f09a6fe41c71626ad4d3f127ce&lt;/code&gt;   &lt;br /&gt;
+SHA-1 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;84e749c37978f9387e16fab29c7b1b291be93a63&lt;/code&gt;  &lt;br /&gt;
+SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;28df5c75a2f78120ff96d4a72a3c23cee97c9b46c96410cf591af38cb4aed0fa&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;First of all, check our sample via VirusTotal:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.virustotal.com/gui/file/28df5c75a2f78120ff96d4a72a3c23cee97c9b46c96410cf591af38cb4aed0fa/details&quot;&gt;https://www.virustotal.com/gui/file/28df5c75a2f78120ff96d4a72a3c23cee97c9b46c96410cf591af38cb4aed0fa/details&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-16.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;So, 52 of 68 AV engines detect our sample as malicious.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-18.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;More of them detect file as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Backdoor.Win32.WINDEALER.ZYJA&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;static-analysis&quot;&gt;Static analysis&lt;/h3&gt;
+
+&lt;p&gt;The specified sample is a PE file:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-13.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hexdump &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-14.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exiftool&lt;/code&gt; for looking metadata:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;exiftool &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_11-09.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And we see that file timestamp is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2021-01-25 13:32:26+03.00&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Executable sample is not packed by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upx&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;upx &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_11-11.png&quot; alt=&quot;upx&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What about Shannon entropy of the sample:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-15.png&quot; alt=&quot;shannon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Analysze with DIE says that the compiler is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Microsoft Visual Studio C++ (6.0)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-19.png&quot; alt=&quot;die&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-20.png&quot; alt=&quot;die&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Malware contains encrypted DLL:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-29_14-22.png&quot; alt=&quot;die&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Interesting strings:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_11-30.png&quot; alt=&quot;strings&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The hardcoded version of WinDealer:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_11-34.png&quot; alt=&quot;version&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;18.20.1225&lt;/code&gt; - version: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;18&lt;/code&gt;, year: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2020&lt;/code&gt;, month and day: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;12.25&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;another intersting strings is:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SYSTEM\CurrentControlSet\Control\Network\{4D36E972-E325-11CE-BFC1-08002BE10318}\%s\Connection&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_11-43.png&quot; alt=&quot;string&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-analysis&quot;&gt;dynamic analysis&lt;/h3&gt;
+
+&lt;p&gt;The sample is GUI application:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-38.png&quot; alt=&quot;winmain&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Contacted IP addresses is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-25.png&quot; alt=&quot;ip&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;May sleep (evasive loops) to hinder dynamic analysis:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-32.png&quot; alt=&quot;sleep&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-45.png&quot; alt=&quot;sleep&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The operator has the power to rename, move, and delete files on the target machine:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-50.png&quot; alt=&quot;createfile&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-53.png&quot; alt=&quot;createfile&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-54.png&quot; alt=&quot;delete&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Also malware search through directories and enum filesystem:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-48.png&quot; alt=&quot;createfile&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and collecting volume information:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-53_1.png&quot; alt=&quot;vol&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;api-hooking&quot;&gt;API hooking&lt;/h4&gt;
+
+&lt;p&gt;Using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InterlockedExchange&lt;/code&gt;, probably the malware sample is hooking the winapi functions:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-06.png&quot; alt=&quot;interlocked&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;avsandbox-evasion&quot;&gt;AV/Sandbox evasion&lt;/h4&gt;
+
+&lt;p&gt;In the malware sample above, the delay timeout is set using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetTickCount()&lt;/code&gt; timer function. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sleep()&lt;/code&gt; function is called in a loop until the timer timeout. In the sandbox, delays that are performed by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sleep()&lt;/code&gt; function are skipped (replaced with a very short timeout) and the virtually elapsed time will be much higher than the requested timeout. The concept behind these methods is to measure elapsed time while running several forms of delays in parallel:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-01.png&quot; alt=&quot;timer&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;sample2.exe&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;File size: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;458752 bytes&lt;/code&gt;  &lt;br /&gt;
+MD5 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;76ba5272a17fdab7521ea21a57d23591&lt;/code&gt;   &lt;br /&gt;
+SHA-1 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6b831413932a394bd9fb25e2bbdc06533821378c&lt;/code&gt;  &lt;br /&gt;
+SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ecd001aeb6bcbafb3e2fda74d76eea3c0ddad4e6e7ff1f43cd7709d4b4580261&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;VirusTotal scan result:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.virustotal.com/gui/file/ecd001aeb6bcbafb3e2fda74d76eea3c0ddad4e6e7ff1f43cd7709d4b4580261/detection&quot;&gt;https://www.virustotal.com/gui/file/ecd001aeb6bcbafb3e2fda74d76eea3c0ddad4e6e7ff1f43cd7709d4b4580261/detection&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-19.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-20.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;static-analysis-1&quot;&gt;Static analysis&lt;/h3&gt;
+
+&lt;p&gt;The specified sample is a PE file:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file &amp;lt;sample2.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-02.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hexdump &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; &amp;lt;sample2.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-03.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-11.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run exiftool for extracting metadata:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;exiftool &amp;lt;sample2.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_12-21.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The sample is a Windows GUI file with timestamp: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2021:03:06 04:13:51+03:00&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-analysis-1&quot;&gt;Dynamic analysis&lt;/h3&gt;
+
+&lt;p&gt;Generating victim &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ID&lt;/code&gt; set in a registry key:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_15-54.png&quot; alt=&quot;victim&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The format of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;victim ID&lt;/code&gt; is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;md5(&quot;&amp;lt;MAC address&amp;gt;+&amp;lt;Physical_Drive_info&amp;gt;+&amp;lt;username&amp;gt;&quot;)&lt;/code&gt;. The malware generates a unique registry entry to store the victim ID for subsequent execution. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;victim ID&lt;/code&gt; is not saved as raw data; instead, the malware changes the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;4&lt;/code&gt; bytes &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;victim ID&lt;/code&gt; to an IP address format.&lt;/p&gt;
+
+&lt;p&gt;This sample collecting host information:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-27.png&quot; alt=&quot;host&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;encoding&quot;&gt;Encoding&lt;/h4&gt;
+
+&lt;p&gt;Malware sample use function call obfuscation:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetUserNameW&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-43.png&quot; alt=&quot;username&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegCreateKeyExA&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-43_1.png&quot; alt=&quot;reg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegDeleteKeyA&lt;/code&gt;&lt;/em&gt; and &lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegCloseKey&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-45.png&quot; alt=&quot;reg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegQueryValueExA&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_16-42.png&quot; alt=&quot;reg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetTokenInformation&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-41.png&quot; alt=&quot;token&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OpenProcessToken&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-40.png&quot; alt=&quot;token&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OpenThreadToken&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-39.png&quot; alt=&quot;token&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AdjustTokenPrivileges&lt;/code&gt;&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-33.png&quot; alt=&quot;token&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;.etc.&lt;/p&gt;
+
+&lt;p&gt;So, malware sample use one of the interesting classic APT techniques: Token theft via turn on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SeDebugPrivilege&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;//....&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;HANDLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;TOKEN_PRIVILEGES&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LUID&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;luid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;BOOL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;tp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PrivilegeCount&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;tp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Privileges&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Luid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;luid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;tp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Privileges&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Attributes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SE_PRIVILEGE_ENABLED&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LookupPrivilegeValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;priv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;luid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;OpenProcessToken&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetCurrentProcess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TOKEN_ADJUST_PRIVILEGES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AdjustTokenPrivileges&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TOKEN_PRIVILEGES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PTOKEN_PRIVILEGES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PDWORD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;registry-modifications-and-persistence&quot;&gt;Registry Modifications and Persistence&lt;/h4&gt;
+
+&lt;p&gt;With a high degree of probability, it can be argued that WinDealer has the functionality of interacting with the registry, probably for persistence mechanism:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-01-26_19-04.png&quot; alt=&quot;reg1&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;encryption&quot;&gt;Encryption&lt;/h4&gt;
+
+&lt;p&gt;Generate 16 bytes &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AES&lt;/code&gt; key to encrypt C2 communication:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-17.png&quot; alt=&quot;crypt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_13-18.png&quot; alt=&quot;crypt&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;c2-anti-tracking-mechanism&quot;&gt;C2 anti-tracking mechanism&lt;/h4&gt;
+
+&lt;p&gt;This malware sample employs an IP Generation Algorithm to generate a random C2 IP address when the backdoor lacks C2 configuration. The IP produced at random will exist inside particular IP address ranges:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;113.62.0.0 - 113.63.255.255&lt;/code&gt; or   &lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;111.120.0.0 - 111.123.255.255&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_16-11.png&quot; alt=&quot;ip&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This mechanism will prevent researchers from tracking down the real C2 IP.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Backdoor.Win32.WINDEALER.ZYJA&lt;/code&gt; is a variant of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WinDealer&lt;/code&gt; malware family. It is a type of backdoor malware that is designed to allow remote attackers to gain unauthorized access to an infected computer system. Once installed, the malware creates a backdoor on the infected system, which allows the attacker to control the system and steal sensitive data.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Backdoor.Win32.WINDEALER.ZYJA&lt;/code&gt; variant is known to be spread through spear-phishing emails that contain malicious attachments. Once the attachment is opened, the malware is installed and begins to communicate with a remote command-and-control server, allowing the attacker to send commands to the infected system and exfiltrate data.&lt;/p&gt;
+
+&lt;p&gt;The malware is capable of performing a range of malicious activities, including stealing credentials and sensitive data, taking screenshots, recording keystrokes, and executing arbitrary commands on the infected system. The malware is also capable of bypassing antivirus and other security software, making it difficult to detect and remove.&lt;/p&gt;
+
+&lt;h3 id=&quot;iocs&quot;&gt;IOCs&lt;/h3&gt;
+
+&lt;h4 id=&quot;versions&quot;&gt;versions&lt;/h4&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Malware&lt;/th&gt;
+      &lt;th&gt;version&lt;/th&gt;
+      &lt;th&gt;md5&lt;/th&gt;
+      &lt;th&gt;sha1&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;WinDealer&lt;/td&gt;
+      &lt;td&gt;18.20.1225&lt;/td&gt;
+      &lt;td&gt;76ba5272a17fdab7521ea21a57d23591&lt;/td&gt;
+      &lt;td&gt;6b831413932a394bd9fb25e2bbdc06533821378c&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;WinDealer&lt;/td&gt;
+      &lt;td&gt;18.20.1225&lt;/td&gt;
+      &lt;td&gt;cc7207f09a6fe41c71626ad4d3f127ce&lt;/td&gt;
+      &lt;td&gt;84e749c37978f9387e16fab29c7b1b291be93a63&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&quot;domain-ips&quot;&gt;domain IPs&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;113.62.0.0/15 111.120.0.0/14&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;port &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;55556/TCP&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6999/UDP&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;221.195.68.71/32&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;122.112.245.55/32&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;yara-rules-from-malpedia&quot;&gt;Yara rules (from Malpedia)&lt;/h3&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;rule win_windealer_auto {&lt;/span&gt;
+
+    &lt;span class=&quot;s&quot;&gt;meta&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;author = &quot;Felix Bilstein - yara-signator at cocacoding dot com&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;date = &quot;2023-01-25&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;version = &quot;1&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;description = &quot;Detects win.windealer.&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;info = &quot;autogenerated rule brought to you by yara-signator&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;tool = &quot;yara-signator v0.6.0&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;signator_config = &quot;callsandjumps;datarefs;binvalue&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_reference = &quot;https://malpedia.caad.fkie.fraunhofer.de/details/win.windealer&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_rule_date = &quot;20230124&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_hash = &quot;2ee0eebba83dce3d019a90519f2f972c0fcf9686&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_version = &quot;20230125&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_license = &quot;CC BY-SA 4.0&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_sharing = &quot;TLP:WHITE&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;s&quot;&gt;/* DISCLAIMER&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* The strings used in this rule have been automatically selected from the&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* disassembly of memory dumps and unpacked files, using YARA-Signator.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* The code and documentation is published here&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;     *&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://github.com/fxb-cocacoding/yara-signator&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* As Malpedia is used as data source, please note that for a given&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* number of families, only single samples are documented.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* This likely impacts the degree of generalization these rules will offer.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* Take the described generation method also into consideration when you&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* apply the rules in your use cases and assign them confidence levels.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;*/&lt;/span&gt;
+
+
+    &lt;span class=&quot;s&quot;&gt;strings&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;$sequence_0 = { 668b91d2070000 8a89d0070000 52 51 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 4, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   668b91d2070000       | mov                 dx, word ptr [ecx + 0x7d2]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8a89d0070000         | mov                 cl, byte ptr [ecx + 0x7d0]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   52                   | push                edx&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   51                   | push                ecx&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_1 = { ff15???????? 85c0 7407 50 ff15???????? 6a01 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 6, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   ff15????????         |&lt;/span&gt;                     
+            &lt;span class=&quot;s&quot;&gt;//   85c0                 | test                eax, eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   7407                 | je                  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   50                   | push                eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   ff15????????         |&lt;/span&gt;                     
+            &lt;span class=&quot;s&quot;&gt;//   6a01                 | push                &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_2 = { 6a01 50 56 e8???????? 83c410 8bc7 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 6, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   6a01                 | push                &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   50                   | push                eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   56                   | push                esi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   e8????????           |&lt;/span&gt;                     
+            &lt;span class=&quot;s&quot;&gt;//   83c410               | add                 esp, 0x10&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8bc7                 | mov                 eax, edi&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_3 = { 6a00 ff15???????? 85c0 7407 50 ff15???????? 6a01 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 7, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   6a00                 | push                &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   ff15????????         |&lt;/span&gt;                     
+            &lt;span class=&quot;s&quot;&gt;//   85c0                 | test                eax, eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   7407                 | je                  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   50                   | push                eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   ff15????????         |&lt;/span&gt;                     
+            &lt;span class=&quot;s&quot;&gt;//   6a01                 | push                &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_4 = { 6a04 50 6a04 68???????? 68???????? }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 5, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   6a04                 | push                &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   50                   | push                eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   6a04                 | push                &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   68????????           |&lt;/span&gt;                     
+            &lt;span class=&quot;s&quot;&gt;//   68????????           |&lt;/span&gt;                     
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_5 = { 56 57 68da070000 e8???????? }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 4, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   56                   | push                esi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   57                   | push                edi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   68da070000           | push                0x7da&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   e8????????           |&lt;/span&gt;                     
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_6 = { 50 56 e8???????? 83c410 8b4618 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 5, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   50                   | push                eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   56                   | push                esi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   e8????????           |&lt;/span&gt;                     
+            &lt;span class=&quot;s&quot;&gt;//   83c410               | add                 esp, 0x10&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8b4618               | mov                 eax, dword ptr [esi + 0x18]&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_7 = { 8b4d08 668b91d2070000 8a89d0070000 52 51 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 5, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8b4d08               | mov                 ecx, dword ptr [ebp + 8]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   668b91d2070000       | mov                 dx, word ptr [ecx + 0x7d2]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8a89d0070000         | mov                 cl, byte ptr [ecx + 0x7d0]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   52                   | push                edx&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   51                   | push                ecx&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_8 = { 53 56 57 68da070000 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 4, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   53                   | push                ebx&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   56                   | push                esi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   57                   | push                edi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   68da070000           | push                0x7da&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_9 = { 8b4d08 668b91d2070000 8a89d0070000 52 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 4, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;800&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8b4d08               | mov                 ecx, dword ptr [ebp + 8]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   668b91d2070000       | mov                 dx, word ptr [ecx + 0x7d2]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8a89d0070000         | mov                 cl, byte ptr [ecx + 0x7d0]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   52                   | push                edx&lt;/span&gt;
+
+    &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;7 of them and filesize &amp;lt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;770048&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;By Cyber Threat Hunters from MSSPLab:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/zhassulan-zhussupov-5a347419b/&quot;&gt;@cocomelonc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/aruzhan-kaldybek-775735226&quot;&gt;@wqkasper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.</summary></entry><entry><title type="html">Welcome to our cybersecurity blog</title><link href="http://localhost:4000/tutorial/2023/05/07/welcome.html" rel="alternate" type="text/html" title="Welcome to our cybersecurity blog" /><published>2023-05-07T05:00:00+03:00</published><updated>2023-05-07T05:00:00+03:00</updated><id>http://localhost:4000/tutorial/2023/05/07/welcome</id><content type="html" xml:base="http://localhost:4000/tutorial/2023/05/07/welcome.html">&lt;p&gt;Welcome to our cybersecurity blog!&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/1/welcome.png&quot; alt=&quot;welcome&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
