@@ -95,7 +95,7 @@ analytics:
 # Site Author
 author:
   name             : "MSSP Lab"
-  avatar           : "/assets/images/logo.png"
+  avatar           : "/assets/images/mssp-logo-white.png"
   bio              : "cybersec lab. research and development"
   email            :
   links:
