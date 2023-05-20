@@ -10,4 +10,10 @@ var store = [{
         "tags": ["blueteam","malware","malwareanalysis"],
         "url": "/threat-hunting/2023/05/08/malware-analysis-windealer.html",
         "teaser": "/assets/images/2/2023-05-08_12-08.png"
+      },{
+        "title": "Malware source code investigation: AsyncRAT",
+        "excerpt":"AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks. AsyncRAT was published as an open source remote administration tool project...","categories": ["threat-hunting"],
+        "tags": ["blueteam","malware","malwareanalysis"],
+        "url": "/threat-hunting/2023/05/19/malware-src-asyncrat.html",
+        "teaser": "/assets/images/3/asyncrat.png"
       }]

@@ -1,4 +1,216 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-05-18T21:20:37+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware analysis report: WinDealer (LuoYu Threat Group)</title><link href="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html" rel="alternate" type="text/html" title="Malware analysis report: WinDealer (LuoYu Threat Group)" /><published>2023-05-08T05:00:00+03:00</published><updated>2023-05-08T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html">&lt;p&gt;WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-05-20T17:23:41+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware source code investigation: AsyncRAT</title><link href="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html" rel="alternate" type="text/html" title="Malware source code investigation: AsyncRAT" /><published>2023-05-19T05:00:00+03:00</published><updated>2023-05-19T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html">&lt;p&gt;AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/asyncrat.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;AsyncRAT&lt;/strong&gt; was published as an open source remote administration tool project on GitHub in January 2019.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_12-39.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; is a regular malware product and set of tools utilized by attackers and APT organizations. Threat actors and adversaries utilized a variety of intriguing script injectors and spear phishing attachments to deliver AsyncRAT to targeted hosts or networks across multiple campaigns.&lt;/p&gt;
+
+&lt;p&gt;In this small research we are detailed investigate the source code of &lt;em&gt;AsyncRAT&lt;/em&gt; and highlights the main features.&lt;/p&gt;
+
+&lt;p&gt;AsyncRAT has been included in &lt;a href=&quot;https://any.run/malware-trends/&quot;&gt;app.any.run’s weekly TOP 10&lt;/a&gt; malware trends tracker for the past few months.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_12-41.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_12-42.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;client-server-architecture&quot;&gt;Client-Server Architecture&lt;/h3&gt;
+
+&lt;p&gt;When executed, the &lt;em&gt;AsyncRat GUI&lt;/em&gt; allows criminals to control the infected machine. The code is open-source and can be modified to suit the purposes of criminals:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-24.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; implements a client-server architecture. The client side is the infected machine, whereas the server side is the attacker-operated control interface. The client establishes a connection with the server using asynchronous TCP sockets, which permits multiple simultaneous connections without interference.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_13-58.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;core-functionalities&quot;&gt;Core Functionalities&lt;/h3&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; includes several functionalities that permit a high degree of control over infected systems:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Remote Desktop&lt;/strong&gt; - The client captures screenshots of the desktop and sends them to the server, allowing the attacker to see the victim’s activities in real time.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; uses the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.NET Framework&lt;/code&gt;’s built-in libraries to capture screenshots from the victim’s machine. The following is a more technical breakdown of how this feature works in the &lt;em&gt;AsyncRAT&lt;/em&gt; client.&lt;/p&gt;
+
+&lt;p&gt;In the &lt;em&gt;AsyncRAT&lt;/em&gt;’s source code, you would find a function responsible for capturing screenshots. This function is typically invoked when the server sends a specific command to the client.&lt;/p&gt;
+
+&lt;p&gt;To capture the screenshot, &lt;em&gt;AsyncRAT&lt;/em&gt; leverages the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;System.Drawing&lt;/code&gt; namespace in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.NET Framework&lt;/code&gt;, which provides access to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GDI+&lt;/code&gt; basic graphics functionality. More specifically, it uses the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Bitmap&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Graphics&lt;/code&gt; classes to capture and store the screenshot(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/Plugin/Options/Options/Handler/HandleThumbnails.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-02.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This code does the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Creates a new &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Bitmap&lt;/code&gt; object with the same size as the screen. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Screen.PrimaryScreen.Bounds&lt;/code&gt; property is used to determine the size of the screen.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Creates a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Graphics&lt;/code&gt; object from the bitmap. This object is used to perform the screenshot operation.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Uses the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Graphics.CopyFromScreen&lt;/code&gt; method to take the screenshot. This method copies the pixels from the screen and stores them in the bitmap.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After the screenshot is captured and stored in the bitmap, &lt;em&gt;AsyncRAT&lt;/em&gt; then usually converts the bitmap to a byte array and sends it to the server. The server can then reconstruct the bitmap from the byte array to view the screenshot. It’s worth noting that the screenshot is usually compressed before being sent to reduce network usage.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Keylogger&lt;/strong&gt; - AsyncRAT logs keystrokes and periodically sends the data to the server. This feature can capture sensitive information like passwords and credit card numbers.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; captures keystrokes by using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SetWindowsHookEx&lt;/code&gt; function, which is part of the Windows API. This function allows the application to install a “hook” that monitors the message traffic in the system and retrieves specific types of messages, such as keypresses.&lt;/p&gt;
+
+&lt;p&gt;The following is a code of how &lt;em&gt;AsyncRAT&lt;/em&gt; implement a keylogger in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C#&lt;/code&gt; using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SetWindowsHookEx&lt;/code&gt; function (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Plugin/LimeLogger/LimeLogger/Packet.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-09.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SetHook&lt;/code&gt; function installs the keyboard hook by calling &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SetWindowsHookEx&lt;/code&gt; with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LowLevelKeyboardProc&lt;/code&gt; delegate. The hook is then uninstalled using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UnsetHook&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-11.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;File Explorer&lt;/strong&gt; - The client can navigate the filesystem, upload files to the server, download files from the server, and execute files.&lt;/p&gt;
+
+&lt;p&gt;To accomplish these tasks, &lt;em&gt;AsyncRAT&lt;/em&gt; uses standard &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.NET Framework&lt;/code&gt; libraries. Let’s break down each function separately.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Navigating the File System&lt;/em&gt;. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;System.IO&lt;/code&gt; namespace in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.NET Framework&lt;/code&gt; contains classes for manipulating files and directories. For example, &lt;em&gt;AsyncRAT&lt;/em&gt; retrieve a list of files in a directory using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Directory.GetFiles&lt;/code&gt; method (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Plugin/FileSearcher/FileSearcher/Packet.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-19.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And get subdirectories with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Directory.GetDirectories&lt;/code&gt; method (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Plugin/FileManager/FileManager/Handler/FileManager.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-20.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Uploading Files To the Server&lt;/em&gt;. To read the contents of a file, &lt;em&gt;AsyncRAT&lt;/em&gt; uses the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;File.ReadAllBytes&lt;/code&gt; method, which reads a file and returns its contents as a byte array (for example in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Plugin/FileSearcher/FileSearcher/Packet.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-27.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Downloading Files from the Server&lt;/em&gt;. When the server sends a file, it is usually in the form of a byte array. The client can save this byte array to a file using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;File.WriteAllBytes&lt;/code&gt; method (for example in: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Server/HandlePacket/HandleFileSearcher.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-31.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Executing Files&lt;/em&gt;. To execute a file, &lt;em&gt;AsyncRAT&lt;/em&gt; uses the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process.Start&lt;/code&gt; method from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;System.Diagnostics&lt;/code&gt; namespace (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Plugin/FileManager/FileManager/Handler/FileManager.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-34.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Process Manager&lt;/strong&gt; - The client retrieves a list of running processes and can kill or start processes.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; utilizes the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;System.Diagnostics&lt;/code&gt; namespace in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.NET Framework&lt;/code&gt; to interact with system processes.
+&lt;em&gt;Retrieving a List of Running Processes&lt;/em&gt;. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process&lt;/code&gt; class in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;System.Diagnostics&lt;/code&gt; namespace has a static method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetProcesses&lt;/code&gt; that returns an array of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process&lt;/code&gt; objects, which represent all the processes currently running on the system. Here is how it’s used (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Plugin/ProcessManager/ProcessManager/Packet.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-45.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;also use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SELECT ProcessId, Name, ExecutablePath FROM Win32_Process&lt;/code&gt; query:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-46.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Starting a Process&lt;/em&gt;. To start a new process, &lt;em&gt;AsyncRAT&lt;/em&gt; uses the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process.Start&lt;/code&gt; method, which starts a process resource by specifying the name of an application or document:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_14-49.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that all these operations require sufficient permissions. If the &lt;em&gt;AsyncRAT&lt;/em&gt; client doesn’t have the necessary permissions, these operations will fail.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Remote Shell&lt;/strong&gt; - The client can execute shell commands from the server, enabling an even greater degree of control.&lt;/p&gt;
+
+&lt;p&gt;The ability to execute shell commands remotely is a powerful feature of &lt;em&gt;AsyncRAT&lt;/em&gt;. This feature allows the attacker to execute virtually any command, as if they were physically present at the victim’s machine.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; executes shell commands by using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;System.Diagnostics.Process&lt;/code&gt; class in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.NET Framework&lt;/code&gt;. This class provides the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Start&lt;/code&gt; method, which can start a new process. To execute a shell command, &lt;em&gt;AsyncRAT&lt;/em&gt; starts a new instance of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cmd.exe&lt;/code&gt; with the shell command as a parameter (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Plugin/Miscellaneous/Miscellaneous/Handler/HandleShell.cs&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_15-22.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;stealth-and-persistence&quot;&gt;Stealth and Persistence&lt;/h3&gt;
+
+&lt;p&gt;To evade detection, &lt;em&gt;AsyncRAT&lt;/em&gt; uses several techniques:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Process Injection&lt;/strong&gt; - &lt;em&gt;AsyncRAT&lt;/em&gt; injects its core functionality into a separate process to hide its malicious activities.&lt;/p&gt;
+
+&lt;p&gt;The injector is used to load into the memory the &lt;em&gt;AsyncRAT&lt;/em&gt; file by taking advantage of the &lt;a href=&quot;https://attack.mitre.org/techniques/T1055/012/&quot;&gt;Process Hollowing&lt;/a&gt; technique. As demonstrated, a new thread is created, put in a suspended state (pause), the target file mapped into the memory, and then executed:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-06.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_15-57.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Anti-Analysis&lt;/strong&gt; - The client employs various anti-analysis techniques, including the detection of virtual machines and sandbox environments.&lt;/p&gt;
+
+&lt;p&gt;Malware often employs anti-analysis techniques to evade detection, avoid being analyzed in a controlled environment, and ultimately to make reverse-engineering more challenging. This includes checks for virtual machines (VMs) and sandbox environments, which are commonly used tools for malware analysis.&lt;/p&gt;
+
+&lt;p&gt;Analyzing the source code of &lt;em&gt;AsyncRAT&lt;/em&gt;, you may find various techniques that it employs to achieve this (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Client/Helper/Anti_Analysis.cs&lt;/code&gt;). While specific implementation details could vary depending on the version or variant of the RAT, here’s an example of what these anti-analysis checks might look like in practice.&lt;/p&gt;
+
+&lt;p&gt;Here is how AsyncRAT check for a VM and a sandbox:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-08.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-13.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, just check if &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sbiedll.dll&lt;/code&gt; is loaded, which is a module of sandboxie sandbox.&lt;/p&gt;
+
+&lt;p&gt;Also check disk size:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-11.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The logic is simple, determine if a compromised host is operating in a malware lab or sandbox by examining the size of its hard drive.&lt;/p&gt;
+
+&lt;p&gt;Another method is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IsXP&lt;/code&gt;: check if its process is running in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;XP Windows&lt;/code&gt; Operating System:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-12.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Check if remote debugger exist:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-14.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The following image depicts the code that drops a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bat&lt;/code&gt; script in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%temp%&lt;/code&gt; folder to delete itself as part of a defense evasion technique to clear its trace after execution and drop a copy of itself on the compromised host:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-21.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Persistence&lt;/strong&gt; - The client installs itself to the registry or startup folder to maintain persistence after system reboots.&lt;/p&gt;
+
+&lt;p&gt;The &lt;em&gt;AsyncRAT&lt;/em&gt; client will verify that its code executes with administrative permissions. If so, it will add Windows Scheduled Tasks using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schtasks.exe&lt;/code&gt; with the highest runlevel permissions to execute a duplicate of itself, if &lt;em&gt;AsyncRAT&lt;/em&gt; is not running with administrative privileges, it will use Registry Run Key &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run&lt;/code&gt; for its persistence:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-28.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;connection-and-control&quot;&gt;Connection and Control&lt;/h3&gt;
+
+&lt;p&gt;On execution, the client initiates a connection to the server. After a successful connection, the client sends detailed system information to the server, including the computer name, user name, operating system, processor, and installed antivirus software. The client also downloads a small &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.NET&lt;/code&gt; assembly DLL file from the server, which is injected into a newly created process. This is where the &lt;em&gt;AsyncRAT&lt;/em&gt;’s core functionality is executed.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; will decrypt its AES encrypted configuration data including the port and C2 IP address that will be used for C2 communication:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-49.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the code snippet for C2 server communication and C2 downloads:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_16-53.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;updating-and-uninstalling&quot;&gt;Updating and Uninstalling&lt;/h3&gt;
+
+&lt;p&gt;&lt;em&gt;AsyncRAT&lt;/em&gt; allows for the updating and uninstalling of the client directly from the server.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/3/2023-05-20_17-03.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The uninstall functionality would typically involve the server sending a command to the client, telling it to remove itself from the infected machine. This might involve deleting the client binary, as well as any other files created by the client. The client might also remove any registry keys it has created, and undo any other changes it has made to the system.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Given its open-source nature and availability on GitHub since January 2019, &lt;em&gt;AsyncRAT&lt;/em&gt; is accessible to a wide range of threat actors, including both individual malicious actors and sophisticated APT groups. This availability, combined with its powerful features, makes it a popular choice for cybercriminals.&lt;/p&gt;
+
+&lt;p&gt;The observed campaigns leveraging spear-phishing attacks and script loaders, such as the one using a Microsoft OneNote attachment to load a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.HTA&lt;/code&gt; file, demonstrate that attackers can employ a variety of methods to deliver &lt;em&gt;AsyncRAT&lt;/em&gt; to targeted hosts or networks. This underlines the importance of a comprehensive security posture, encompassing not just malware detection and removal, but also employee training and robust email security measures to combat spear-phishing attacks.&lt;/p&gt;
+
+&lt;p&gt;By Cyber Threat Hunters from MSSPLab:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/zhassulan-zhussupov-5a347419b/&quot;&gt;@cocomelonc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/aruzhan-kaldybek-775735226&quot;&gt;@wqkasper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/NYAN-x-CAT/AsyncRAT-C-Sharp&quot;&gt;https://github.com/NYAN-x-CAT/AsyncRAT-C-Sharp&lt;/a&gt;   &lt;br /&gt;
+&lt;a href=&quot;https://malpedia.caad.fkie.fraunhofer.de/details/win.asyncrat&quot;&gt;https://malpedia.caad.fkie.fraunhofer.de/details/win.asyncrat&lt;/a&gt;   &lt;br /&gt;
+&lt;a href=&quot;https://twitter.com/anyrun_app/status/1617401778240102400?s=20&amp;amp;t=ED5KEvCMTz8_F2IjR61j8Q&quot;&gt;https://twitter.com/anyrun_app/status/1617401778240102400&lt;/a&gt;    &lt;br /&gt;
+&lt;a href=&quot;https://any.run/malware-trends/&quot;&gt;https://any.run/malware-trends/&lt;/a&gt;     &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1055/012/&quot;&gt;MITRE ATT&amp;amp;CK: Process Hollowing&lt;/a&gt;   &lt;br /&gt;
+&lt;a href=&quot;https://research.splunk.com/stories/asyncrat/&quot;&gt;https://research.splunk.com/stories/asyncrat/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.</summary></entry><entry><title type="html">Malware analysis report: WinDealer (LuoYu Threat Group)</title><link href="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html" rel="alternate" type="text/html" title="Malware analysis report: WinDealer (LuoYu Threat Group)" /><published>2023-05-08T05:00:00+03:00</published><updated>2023-05-08T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html">&lt;p&gt;WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-05-08_12-08.png&quot; alt=&quot;windealer&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
