@@ -1,4 +1,436 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-05-21T21:12:49+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware source code investigation: AsyncRAT</title><link href="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html" rel="alternate" type="text/html" title="Malware source code investigation: AsyncRAT" /><published>2023-05-19T05:00:00+03:00</published><updated>2023-05-19T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html">&lt;p&gt;AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-06-03T03:02:38+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware analysis report: SNOWYAMBER (+APT29 related malwares)</title><link href="http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29.html" rel="alternate" type="text/html" title="Malware analysis report: SNOWYAMBER (+APT29 related malwares)" /><published>2023-06-02T05:00:00+03:00</published><updated>2023-06-02T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29.html">&lt;p&gt;This report provides a comprehensive analysis of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SNOWYAMBER&lt;/code&gt; dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APT29&lt;/code&gt;. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/APT29.png&quot; alt=&quot;apt29&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;threat-actor&quot;&gt;Threat actor&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;APT29&lt;/strong&gt;, also known as The Dukes or Cozy Bear, is a highly sophisticated and well-resourced cyber espionage group believed to be associated with the Russian government. It has been operating since at least 2008.&lt;/p&gt;
+
+&lt;h3 id=&quot;target&quot;&gt;Target&lt;/h3&gt;
+
+&lt;p&gt;While the group’s exact location is unknown, multiple cybersecurity research groups and government agencies attribute &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APT29&lt;/code&gt; to Russia. Their targets are typically spread across the globe, with a specific focus on government organizations, think-tanks, healthcare organizations, and energy sectors.&lt;/p&gt;
+
+&lt;h3 id=&quot;ttps&quot;&gt;TTPs&lt;/h3&gt;
+
+&lt;p&gt;&lt;em&gt;APT29&lt;/em&gt; is known for its persistent and evolving tactics, which include a combination of advanced techniques and procedures:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Spear-Phishing:&lt;/em&gt; APT29 commonly utilizes spear-phishing campaigns for initial compromise. These usually involve emails with either a malicious attachment or a link to a malicious website. Their spear-phishing attacks often involve the use of legitimate web services, such as Google accounts, to host their payload and seem less suspicious.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Use of Zero-days and Exploits:&lt;/em&gt; The group is known to use zero-day exploits as well as known vulnerabilities to infiltrate networks. They were known to exploit vulnerabilities such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CVE-2017-11292&lt;/code&gt; (Adobe Flash), &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CVE-2017-8759&lt;/code&gt; (.NET Framework), and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CVE-2017-0199&lt;/code&gt; (Microsoft Office/WordPad).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Living-off-the-Land Tactics:&lt;/em&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APT29&lt;/code&gt; frequently employs “living-off-the-land” tactics, where they use legitimate system tools and processes to hide their activities and maintain persistence. For instance, they have been known to use PowerShell for scripting, WMI for persistence, and PsExec for lateral movement.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Custom Malware:&lt;/em&gt; The group uses a variety of custom backdoors and droppers, including but not limited to MiniDuke, CosmicDuke, OnionDuke, and CozyDuke. More recently, they have been associated with the WellMess and WellMail malware.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Stealth and Long-term Persistence:&lt;/em&gt; APT29 is known for its stealthy operations and ability to maintain a long-term presence on infiltrated networks without detection. They often do so by limiting their activities during the working hours of the target’s local time zone to mimic legitimate users and avoid raising alerts.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;em&gt;Data Exfiltration:&lt;/em&gt; APT29 is known for extracting sensitive information from the infiltrated networks. They often do this very slowly and cautiously to avoid detection. The group is believed to be interested in gathering intelligence related to foreign policy, defense, international relations, and similar topics.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;malware-features&quot;&gt;Malware features&lt;/h3&gt;
+
+&lt;p&gt;Through our analysis, we have identified the following notable features of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SNOWYAMBER&lt;/code&gt; dropper:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Infection capabilities:&lt;/em&gt; The malware is typically introduced to the victim’s machine via spear phishing, hiding in documents that prompt the user to enable macros. (High Confidence)&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Capacity for self-preservation:&lt;/em&gt; The malware employs anti-analysis and persistence mechanisms, which include obfuscation techniques, disabling security tools, and creating Registry keys to survive reboots. (High Confidence)&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Diffusion mechanism:&lt;/em&gt; The dropper, upon execution, deploys additional payloads on the infected machine, and may also propagate laterally within the network. (Medium Confidence)&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Data exfiltration capabilities:&lt;/em&gt; The malware appears capable of collecting system information and sending it to a Command and Control (C2) server. (High Confidence)&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;C2 mechanisms:&lt;/em&gt; The malware uses encrypted HTTP requests for C2 communication. (High Confidence)&lt;/p&gt;
+
+&lt;h3 id=&quot;identification&quot;&gt;Identification&lt;/h3&gt;
+
+&lt;p&gt;Among the malware samples analysed, the most interesting are following.&lt;/p&gt;
+
+&lt;p&gt;Three samples are being investigated:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;sample.exe&lt;/em&gt; - this file is worked for injection:&lt;/p&gt;
+
+&lt;p&gt;File size: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;205824 bytes&lt;/code&gt;  &lt;br /&gt;
+MD5 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;109f05770bf8550f71b39ceaffc6e42e&lt;/code&gt;   &lt;br /&gt;
+SHA-1 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;72b57b47649f145ba341420fa0a4624810c011d9&lt;/code&gt;  &lt;br /&gt;
+SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;287543c235cf68695373d367144c51a0236879e614e8ea4634b82e5336785edc&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;First of all, check our sample via VirusTotal:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.virustotal.com/gui/file/287543c235cf68695373d367144c51a0236879e614e8ea4634b82e5336785edc/detection&quot;&gt;https://www.virustotal.com/gui/file/287543c235cf68695373d367144c51a0236879e614e8ea4634b82e5336785edc/detection&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_13-21.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;So, 2 of 70 AV engines detect our sample as malicious.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This sample is written in C++ and uses multiple malware development tricks: WinAPI functions call by hash, string obfuscation and encryption, time distortion.&lt;/p&gt;
+
+&lt;h3 id=&quot;static-analysis&quot;&gt;Static analysis&lt;/h3&gt;
+
+&lt;p&gt;The specified sample is a PE file:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_17-23.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hexdump &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_17-25.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exiftool&lt;/code&gt; for looking metadata:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;exiftool &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_17-26.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And we see that file timestamp is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2023-02-25 22:07:22+03.00&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Executable sample is not packed by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upx&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;upx &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_17-28.png&quot; alt=&quot;upx&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What about Shannon entropy of the sample:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_17-30.png&quot; alt=&quot;shannon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Analysze with DIE says that the compiler is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Microsoft Visual Studio 2019&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_18-26.png&quot; alt=&quot;die&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-analysis&quot;&gt;dynamic analysis&lt;/h3&gt;
+
+&lt;p&gt;Contacted IP addresses is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_18-37.png&quot; alt=&quot;dynamic&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The main logic starts with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;int start&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;p&gt;Then arbitrary computations are performed: this is a popular sandbox bypass trick. And run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;switch&lt;/code&gt; logic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_01-59.png&quot; alt=&quot;dynamic&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_16-30.png&quot; alt=&quot;dynamic&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Also use WinAPI functions:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CreateTimerQueue&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CreateTimerQueueTimer&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DeleteTimerQueueEx&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_17-06.png&quot; alt=&quot;dynamic&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_17-16.png&quot; alt=&quot;dynamic&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here use an event object to track the TimeRoutine execution, create the timer queue, then set a timer to call the timer routine in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;10&lt;/code&gt; seconds.&lt;/p&gt;
+
+&lt;p&gt;This implementation sets up asynchronous timers using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CreateTimerQueueTimer&lt;/code&gt;. Each executes one after the other and does the following tasks: Wait a specific time period.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_02-03.png&quot; alt=&quot;dynamic&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When executed, the injector reads the resource, decrypts it by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RC4&lt;/code&gt; algorithm, allocates memory, copies sections, processes relocks, and transfers control to the entry point.&lt;/p&gt;
+
+&lt;p&gt;What about injection technique. It’s PE injection.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_01-51.png&quot; alt=&quot;dynamic&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;All NT API functions are replaced by calling equivalent syscalls from &lt;a href=&quot;https://github.com/klezVirus/SysWhispers3&quot;&gt;https://github.com/klezVirus/SysWhispers3&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;sample2.exe&lt;/em&gt; - this sample is an encryptor:&lt;/p&gt;
+
+&lt;p&gt;File size: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;214528 bytes&lt;/code&gt;  &lt;br /&gt;
+MD5 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;107dae5b9c61c962e0d604cd70a1d8ae&lt;/code&gt;   &lt;br /&gt;
+SHA-1 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3752be6b162bacb0d7c12b6d122c9dbaf3ad6223&lt;/code&gt;  &lt;br /&gt;
+SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a89150f159c1c9d053365ac38625f783642bc4c16a693cb106d715819acc677b&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Check it via VirusTotal:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.virustotal.com/gui/file/a89150f159c1c9d053365ac38625f783642bc4c16a693cb106d715819acc677b/detection&quot;&gt;https://www.virustotal.com/gui/file/a89150f159c1c9d053365ac38625f783642bc4c16a693cb106d715819acc677b/detection&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_15-53.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;So, 2 of 70 AV engines detect our sample as malicious.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This encryptor encrypts the payload with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RC4&lt;/code&gt; algorithm, then the result is attached to the injector with the resource.&lt;/p&gt;
+
+&lt;p&gt;Encryptor use 2 params: Input file and output file.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_01-17.png&quot; alt=&quot;enc&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_02-56.png&quot; alt=&quot;enc&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Classic &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RC4&lt;/code&gt; algorithm:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_03-01.png&quot; alt=&quot;enc&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There is a simple reimplementation this logic:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;VOID&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;rc4crypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PBYTE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PCSTR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UINT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keyLen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UINT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataLen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HeapAlloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetProcessHeap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HeapAlloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetProcessHeap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// to be used in swaping&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* S &amp;amp; K initialization */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keyLen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* State Permutation */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;//Swap S[i] &amp;amp; S[j]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// reintializing j to reuse it&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataLen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// using %256 to avoid exceed the array limit&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// using %256 to avoid exceed the array limit&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;//Swap S[i] &amp;amp; S[j]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// XOR generated S[t] with Byte from the plaintext / cipher and append each Encrypted/Decrypted byte to result array&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;HeapFree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetProcessHeap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;HeapFree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetProcessHeap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The encryption/decryption key is:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;PCSTR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C2B55923&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\0&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;sample3.exe&lt;/em&gt; - this sample plays the role of a reverse shell:&lt;/p&gt;
+
+&lt;p&gt;File size: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;9216 bytes&lt;/code&gt;  &lt;br /&gt;
+MD5 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;68d957f5fbb2f2078da9059995ece969&lt;/code&gt;   &lt;br /&gt;
+SHA-1 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;545ccdb7e68c6cef6271698c0815db33625aae03&lt;/code&gt;  &lt;br /&gt;
+SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6dc1393ccacd031fa0141aa312d55deb2552a7a95c3ae21856c82beb21a554bd&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;First of all, check our sample via VirusTotal:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.virustotal.com/gui/file/6dc1393ccacd031fa0141aa312d55deb2552a7a95c3ae21856c82beb21a554bd/detection&quot;&gt;https://www.virustotal.com/gui/file/6dc1393ccacd031fa0141aa312d55deb2552a7a95c3ae21856c82beb21a554bd/detection&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-02_06-30.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;So, 14 of 71 AV engines detect our sample as malicious.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;More of them detect file as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gen:Heur.Loregun.19&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Contacted IP addresses:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_01-39.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The logic of this sample is pretty simple: create a socket, listen on it, transfer all I/O to the socket.&lt;/p&gt;
+
+&lt;h3 id=&quot;malware-evasion-tricks&quot;&gt;Malware evasion tricks&lt;/h3&gt;
+
+&lt;p&gt;RVA to offset:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_02-22.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We restored WinAPI hashing logic:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#define UPCASE(wch)                     \
+  (((wch) &amp;gt;= 'a') &amp;amp;&amp;amp; ((wch) &amp;lt;= 'z') ? \
+      (wch)                           \
+  :                                   \
+      ((wch) + ('a'-'A'))             \
+  )                                   
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ULONG&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;HashA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PCSTR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SIZE_T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ULONG&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ULONG&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;SIZE_T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;CHAR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;65599&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UPCASE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ULONG&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;HashW&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PCWSTR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SIZE_T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ULONG&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ULONG&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;SIZE_T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;WCHAR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;65599&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;UPCASE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TmpHashValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and hashing table:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/4/2023-06-03_02-11.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mh&quot;&gt;0x8ba508f3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//AmsiScanBuffer&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xc4f4eb06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//AmsiOpenSession&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xea48872c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//CloseHandle&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x3bc77547&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//closesocket&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x96d3ba46&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//connect&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x8278b698&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//CreateMutexW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x609502e8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//CreateProcessW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x1347fdfd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//ExitProcess&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x27bcb342&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//ExpandEnvironmentStringsW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x5366ed60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//FreeAddrInfoW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x39c8604e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//GetAddrInfoW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x26f75d64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//GetCurrentThreadId&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x55e2cac2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//GetFileAttributesW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xab26d610&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//GetLastError&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xbd71d0e0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//LoadLibraryA&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xbd71d0ce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//LoadLibraryW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x23dcad1c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrcatA&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xd84484d6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrcpyA&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x23dcad6a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrcatW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xdfc07835&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrcmpiA&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xdfc07803&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrcmpiW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xd844bb3c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrcpyW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x468d52ab&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrlenW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x468d525d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//lstrlenA&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xf94e8b9f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//MessageBoxW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x326d0bc9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//MultiByteToWideChar&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x11983657&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//NtTraceEvent&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x9293ab58&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//OutputDebugStringW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xc83db0b4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//ReleaseMutex&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xbdcac89f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlAllocateHeap&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x3c3e5b30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlCompareMemory&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x1dc948b0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlMoveMemory&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x3519f2b9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlDosPathNameToNtPathName_U&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xce521091&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlExitUserThread&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x4ead0e2e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlFreeHeap&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xfc4d07c0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlGetVersion&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xe24742d8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlInitUnicodeString&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xb1d4a311&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlNtStatusToDosError&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x819c55ff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//RtlZeroMemory&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xd66bb51c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//SetLastError&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x0f8a6e1b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//Sleep&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x036a4566&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//VirtualAlloc&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x0033e9b1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//VirtualAllocEx&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xc7433c7b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//VirtualFree&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xaa9a1e06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//VirtualFreeEx&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x61462271&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//VirtualQuery&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x9f79559c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//WaitForMultipleObjects&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x4b570e37&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//WaitForSingleObject&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x85729171&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//WideCharToMultiByte&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x874700d3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//WSACleanup&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0x90b71e53&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//WSASocketW&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xa48ed094&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//WSAStartup&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xfdb3b358&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//wvsprintfA&lt;/span&gt;
+&lt;span class=&quot;mh&quot;&gt;0xfdb3b3a6&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//wvsprintfW&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;iocs&quot;&gt;IOCs&lt;/h3&gt;
+
+&lt;h3 id=&quot;sigma-rule&quot;&gt;Sigma rule&lt;/h3&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Remote Thread Creation In Uncommon Target Image&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;a1a144b7-5c9b-4853-a559-2172be8d4a03&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;related&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;f016c716-754a-467f-a39e-63c06f773987&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;obsoletes&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;experimental&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Detects uncommon target processes for remote thread creation&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;references&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://blog.redbluepurple.io/offensive-research/bypassing-injection-detection&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Florian Roth (Nextron Systems)&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2022/03/16&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;modified&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2023/05/05&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;tags&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;attack.defense_evasion&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;attack.privilege_escalation&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;attack.t1055.003&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;logsource&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;product&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;windows&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;category&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;create_remote_thread&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;detection&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;selection&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;TargetImage|endswith&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\calc.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\calculator.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\explorer.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\mspaint.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\notepad.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\ping.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\sethc.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\spoolsv.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\wordpad.exe'&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;\write.exe'&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;filter_optional_aurora_1&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;StartFunction&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;EtwpNotificationThread'&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;filter_optional_aurora_2&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;SourceImage|contains&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;unknown&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;process'&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;filter_main_spoolsv&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;SourceImage&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;C:\Windows\System32\csrss.exe'&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;TargetImage&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;C:\Windows\System32\spoolsv.exe'&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;selection and not 1 of filter_main_* and not 1 of filter_optional_*&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;falsepositives&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Unknown&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;high&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Running code in the context of another process may allow a threat actor to access the process’s memory, system/network resources, and possibly elevated privileges. PE injection is commonly used by malware for persistent infection and evasion of detection.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;LoadPE&lt;/em&gt; Injection is a technique that involves loading a PE file into the memory of a process. In a typical LoadPE Injection scenario, the following steps occur:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The malware allocates space in its own process for the PE file.&lt;/li&gt;
+  &lt;li&gt;The malware reads the PE file from disk into the allocated space.&lt;/li&gt;
+  &lt;li&gt;The malware resolves import addresses for the PE file.&lt;/li&gt;
+  &lt;li&gt;The malware creates a remote thread in a target process.&lt;/li&gt;
+  &lt;li&gt;The malware injects the PE file into the address space of the target process.&lt;/li&gt;
+  &lt;li&gt;The malware initiates execution of the injected PE file in the target process.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This technique allows malware to avoid many behavioral detection strategies. It allows the malicious PE to be executed without ever being directly loaded or written to the disk, making it more difficult for traditional antivirus software to detect.&lt;/p&gt;
+
+&lt;p&gt;As we can see, the technique is not new but is still used in 2023.&lt;/p&gt;
+
+&lt;p&gt;We believe that this is either a new modification of &lt;em&gt;Snowyamber&lt;/em&gt; or a new Conti style malware family, since any Russian related groups use ContiLeaks. ContiLeaks is a turning point in the cybercrime ecosystem, and in this case, we can expect a lot of changes in how cybercriminal organizations operate.&lt;/p&gt;
+
+&lt;p&gt;By Cyber Threat Hunters from MSSPLab:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/zhassulan-zhussupov-5a347419b/&quot;&gt;@cocomelonc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/aruzhan-kaldybek-775735226&quot;&gt;@wqkasper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://attack.mitre.org/groups/G0016/&quot;&gt;APT29&lt;/a&gt;      &lt;br /&gt;
+&lt;a href=&quot;https://samples.vx-underground.org/APTs/2023/2023.04.13/Paper/SNOWYAMBER_.pdf&quot;&gt;SNOWYAMBER Malware Analysis Report&lt;/a&gt;      &lt;br /&gt;
+&lt;a href=&quot;https://github.com/SigmaHQ/sigma&quot;&gt;https://github.com/SigmaHQ/sigma&lt;/a&gt;    &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1055/&quot;&gt;Process Injection&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">This report provides a comprehensive analysis of the SNOWYAMBER dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group APT29. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations.</summary></entry><entry><title type="html">Malware source code investigation: AsyncRAT</title><link href="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html" rel="alternate" type="text/html" title="Malware source code investigation: AsyncRAT" /><published>2023-05-19T05:00:00+03:00</published><updated>2023-05-19T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html">&lt;p&gt;AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/3/asyncrat.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -340,7 +772,7 @@ SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-03-30_11-43.png&quot; alt=&quot;string&quot; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;dynamic-analysis&quot;&gt;dynamic analysis&lt;/h3&gt;
+&lt;h3 id=&quot;dynamic-analysis&quot;&gt;Dynamic analysis&lt;/h3&gt;
 
 &lt;p&gt;The sample is GUI application:&lt;/p&gt;
 

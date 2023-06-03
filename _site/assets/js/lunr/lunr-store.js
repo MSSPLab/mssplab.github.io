@@ -16,4 +16,10 @@ var store = [{
         "tags": ["blueteam","malware","malwareanalysis"],
         "url": "/threat-hunting/2023/05/19/malware-src-asyncrat.html",
         "teaser": "/assets/images/3/asyncrat.png"
+      },{
+        "title": "Malware analysis report: SNOWYAMBER (+APT29 related malwares)",
+        "excerpt":"This report provides a comprehensive analysis of the SNOWYAMBER dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group APT29. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations. Threat actor APT29, also...","categories": ["threat-hunting"],
+        "tags": ["blueteam","malware","malwareanalysis"],
+        "url": "/threat-hunting/2023/06/02/malware-analysis-apt29.html",
+        "teaser": "/assets/images/4/APT29.png"
       }]
