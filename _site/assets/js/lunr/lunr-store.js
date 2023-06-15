@@ -22,4 +22,10 @@ var store = [{
         "tags": ["blueteam","malware","malwareanalysis"],
         "url": "/threat-hunting/2023/06/02/malware-analysis-apt29.html",
         "teaser": "/assets/images/4/APT29.png"
+      },{
+        "title": "Malware analysis report: Babuk ransomware",
+        "excerpt":"Babuk is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread...","categories": ["threat-hunting"],
+        "tags": ["blueteam","malware","malwareanalysis"],
+        "url": "/threat-hunting/2023/06/15/malware-analysis-babuk.html",
+        "teaser": "/assets/images/5/babuk.png"
       }]
