@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-06-15T20:41:30+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware analysis report: Babuk ransomware</title><link href="http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk.html" rel="alternate" type="text/html" title="Malware analysis report: Babuk ransomware" /><published>2023-06-15T05:00:00+03:00</published><updated>2023-06-15T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk.html">&lt;p&gt;&lt;strong&gt;Babuk&lt;/strong&gt; is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread of new ransomware variants.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-06-15T21:31:34+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware analysis report: Babuk ransomware</title><link href="http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk.html" rel="alternate" type="text/html" title="Malware analysis report: Babuk ransomware" /><published>2023-06-15T05:00:00+03:00</published><updated>2023-06-15T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk.html">&lt;p&gt;&lt;strong&gt;Babuk&lt;/strong&gt; is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread of new ransomware variants.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/5/babuk.png&quot; alt=&quot;apt29&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -396,7 +396,7 @@ AcrSch2Svc, AcronisAgent, CASAD2DWebSvc, CAARCUpdateSvc
 
 &lt;h3 id=&quot;utils&quot;&gt;Utils&lt;/h3&gt;
 
-&lt;p&gt;Also re-implementing some utils for tricks which used in Babuk ransomware.&lt;/p&gt;
+&lt;p&gt;Also re-implementing some utilities for tricks used in Babuk ransomware.&lt;/p&gt;
 
 &lt;p&gt;Checks if the process is running on a 64 bit machine:&lt;/p&gt;
 
@@ -417,7 +417,7 @@ AcrSch2Svc, AcronisAgent, CASAD2DWebSvc, CAARCUpdateSvc
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HeapAlloc&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HeapFree&lt;/code&gt; wrapepr:&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HeapAlloc&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HeapFree&lt;/code&gt; wrappers:&lt;/p&gt;
 
 &lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LPVOID&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;myHeapAlloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;EnterCriticalSection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;critSection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -471,7 +471,7 @@ SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 
 &lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
 
-&lt;p&gt;&lt;em&gt;Babuk&lt;/em&gt; announced their “retirement” at the end of April 2021. However, this does not mean that the threat has disappeared completely. There is concern that members of the group may continue their activities within other groups or under new names. And although the samples we studied were two years old, it is of particular interest to use elliptic curve cryptography in ransomaries.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Babuk&lt;/em&gt; announced their “retirement” at the end of April 2021. However, this does not mean that the threat has disappeared completely. There is concern that members of the group may continue their activities within other groups or under new names. And although the samples we studied were two years old, it is of particular interest to use elliptic curve cryptography in ransomware.&lt;/p&gt;
 
 &lt;p&gt;By Cyber Threat Hunters from MSSPLab:&lt;/p&gt;
 
@@ -485,7 +485,9 @@ SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://attack.mitre.org/software/S0638/&quot;&gt;MITRE ATT&amp;amp;CK: Babuk&lt;/a&gt;      &lt;br /&gt;
 &lt;a href=&quot;https://github.com/kokke/tiny-ECDH-c&quot;&gt;https://github.com/kokke/tiny-ECDH-c&lt;/a&gt;   &lt;br /&gt;
-&lt;a href=&quot;https://en.wikipedia.org/wiki/Peter_Montgomery_(mathematician)&quot;&gt;Peter Montgomery&lt;/a&gt;&lt;/p&gt;
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Salsa20&quot;&gt;Salsa20 wikipedia&lt;/a&gt;    &lt;br /&gt;
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Peter_Montgomery_(mathematician)&quot;&gt;Peter Montgomery&lt;/a&gt;    &lt;br /&gt;
+&lt;a href=&quot;https://app.any.run/tasks/2eaffd86-79a7-4752-835b-b7815f9cd44b/&quot;&gt;Babuk sample&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
 &lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">Babuk is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread of new ransomware variants.</summary></entry><entry><title type="html">Malware analysis report: SNOWYAMBER (+APT29 related malwares)</title><link href="http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29.html" rel="alternate" type="text/html" title="Malware analysis report: SNOWYAMBER (+APT29 related malwares)" /><published>2023-06-02T05:00:00+03:00</published><updated>2023-06-02T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29.html">&lt;p&gt;This report provides a comprehensive analysis of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SNOWYAMBER&lt;/code&gt; dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APT29&lt;/code&gt;. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations.&lt;/p&gt;
