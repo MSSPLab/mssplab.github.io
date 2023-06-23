@@ -28,4 +28,10 @@ var store = [{
         "tags": ["blueteam","malware","malwareanalysis"],
         "url": "/threat-hunting/2023/06/15/malware-analysis-babuk.html",
         "teaser": "/assets/images/5/babuk.png"
+      },{
+        "title": "Malware source code investigation: Paradise Ransomware",
+        "excerpt":"Paradise Ransomware is a type of malware that encrypts the files on the victims’ systems and then demands a ransom to recover the data. This ransomware family first appeared in 2017 and continues to be active with numerous variants identified over the years. The ransomware typically targets Windows operating systems,...","categories": ["threat-hunting"],
+        "tags": ["blueteam","malware","malwareanalysis"],
+        "url": "/threat-hunting/2023/06/23/src-paradise.html",
+        "teaser": "/assets/images/6/paradise-ransom.png"
       }]
