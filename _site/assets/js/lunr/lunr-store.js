@@ -34,4 +34,10 @@ var store = [{
         "tags": ["blueteam","malware","malwareanalysis"],
         "url": "/threat-hunting/2023/06/23/src-paradise.html",
         "teaser": "/assets/images/6/paradise-ransom.png"
+      },{
+        "title": "DEFC: simple enumeration tool for detect AV/EDR",
+        "excerpt":"Hello, cybersecurity enthusiasts and white hackers! This post is the result of our research and the result on the pentest practical cases. We just show the basic Proof of Concept code which detect AV/EDR engine in Windows machine. research First of all, let’s say we have a file with this...","categories": ["open-source"],
+        "tags": ["redteam","malware","pentest"],
+        "url": "/open-source/2023/07/03/open-source-1.html",
+        "teaser": "/assets/images/7/2023-07-03_09-10.png"
       }]
