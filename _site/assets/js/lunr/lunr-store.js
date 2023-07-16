@@ -40,4 +40,16 @@ var store = [{
         "tags": ["redteam","malware","pentest"],
         "url": "/open-source/2023/07/03/open-source-1.html",
         "teaser": "/assets/images/7/2023-07-03_09-10.png"
+      },{
+        "title": "Malware analysis report: BlackCat ransomware",
+        "excerpt":"BlackCat is Rust-based ransomware distributed via the Ransomware-as-a-Service (RaaS) model. BlackCat was observed for the first time in November 2021 and has since been used to target multiple sectors and organizations in numerous countries and regions in Africa, the Americas, Asia, Australia, and Europe. This ransomware and group caught our...","categories": ["threat-hunting"],
+        "tags": ["blueteam","malware","malwareanalysis"],
+        "url": "/threat-hunting/2023/07/13/malware-analysis-blackcat.html",
+        "teaser": "/assets/images/8/blackcat.png"
+      },{
+        "title": "Malware source code investigation: BlackLotus - part 1",
+        "excerpt":"BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system. The source code for...","categories": ["threat-hunting"],
+        "tags": ["blueteam","malware","malwareanalysis"],
+        "url": "/threat-hunting/2023/07/15/malware-src-blacklotus.html",
+        "teaser": "/assets/images/9/blacklotus.png"
       }]

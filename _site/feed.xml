@@ -1,4 +1,828 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-07-03T09:43:37+03:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">DEFC: simple enumeration tool for detect AV/EDR</title><link href="http://localhost:4000/open-source/2023/07/03/open-source-1.html" rel="alternate" type="text/html" title="DEFC: simple enumeration tool for detect AV/EDR" /><published>2023-07-03T06:00:00+03:00</published><updated>2023-07-03T06:00:00+03:00</updated><id>http://localhost:4000/open-source/2023/07/03/open-source-1</id><content type="html" xml:base="http://localhost:4000/open-source/2023/07/03/open-source-1.html">&lt;p&gt;Hello, cybersecurity enthusiasts and white hackers!&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4001/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4001/" rel="alternate" type="text/html" /><updated>2023-07-16T19:04:45+03:00</updated><id>http://localhost:4001/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware source code investigation: BlackLotus - part 1</title><link href="http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus.html" rel="alternate" type="text/html" title="Malware source code investigation: BlackLotus - part 1" /><published>2023-07-15T05:00:00+03:00</published><updated>2023-07-15T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus.html">&lt;p&gt;BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/blacklotus.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The source code for the BlackLotus UEFI bootkit has been published on &lt;a href=&quot;https://github.com/ldpreload/BlackLotus&quot;&gt;GitHub&lt;/a&gt; on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;July, 12, 2023&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_12-08.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since at least October 2022, BlackLotus is a UEFI bootkit that has been for sale on hacking forums. The dangerous malware is for sale for &lt;em&gt;$5,000&lt;/em&gt;, with payments of &lt;em&gt;$200&lt;/em&gt; per update.&lt;/p&gt;
+
+&lt;p&gt;In this small research we are detailed investigate the source code of &lt;em&gt;BlackLotus&lt;/em&gt; and highlights the main features.&lt;/p&gt;
+
+&lt;h3 id=&quot;architecture&quot;&gt;Architecture&lt;/h3&gt;
+
+&lt;p&gt;Black Lotus is written in assembly and C and is only &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;80kb&lt;/code&gt; in size, the malicious code can be configured to avoid infecting systems in countries in the CIS region (At the time of writing, these countries are Armenia, Azerbaijan, Belarus, Kazakhstan, Kyrgyzstan, Moldova, Russia, Tajikistan and Uzbekistan).&lt;/p&gt;
+
+&lt;p&gt;Source code structure looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_12-47_1.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_12-47.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The software consists of two major components: the Agent, which is installed on the target device, and the Web Interface, which is used by administrators to administer bots. A bot in this context refers to a device with the Agent installed.&lt;/p&gt;
+
+&lt;h3 id=&quot;cryptography&quot;&gt;Cryptography&lt;/h3&gt;
+
+&lt;p&gt;First of all, we paid attention to libraries and cryptographic functions:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-05.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-06.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At first we wanted to focus on the WinAPI hashing method by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CRC32&lt;/code&gt; at malware development. As you can see, nothing out of the ordinary here, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CRC32&lt;/code&gt; implementation with constant &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0xEDB88320L&lt;/code&gt;. You can learn more about how to use it for hashing when developing malware, for example, &lt;a href=&quot;https://cocomelonc.github.io/malware/2023/02/02/malware-analysis-7.html&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The implementation of the RC4 algorithm is also standard here, there is nothing complicated about it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-12.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What about XOR? This code appears to implement a custom type of encryption on a given data buffer. The function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CryptXor&lt;/code&gt; is applied to the buffer using the specified Key and the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cipher Block Chaining (CBC)&lt;/code&gt; method. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CBC&lt;/code&gt; method is a type of block cipher mode that encrypts plaintext into ciphertext. The encryption of each block depends on the previous block of data:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-19.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In summary, this function performs a custom type of encryption on the input buffer. It uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;XOR&lt;/code&gt; operations with a given key and CBC chaining, with the possibility to skip over pairs of zero &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DWORD&lt;/code&gt;s.&lt;/p&gt;
+
+&lt;p&gt;And also we have function to decrypt via XOR:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-21.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, the next interesting thing is files like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ntdll_hash.h&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kernel32_hash.h&lt;/code&gt;, etc:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-25.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Each of which contains hashes of WINAPI functions and DLL names:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-25_1.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;av-evasion-tactic&quot;&gt;AV evasion tactic&lt;/h3&gt;
+
+&lt;p&gt;Then, malware author just use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetModuleHandleByHash (DWORD Hash)&lt;/code&gt; function:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-44.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The given C function, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetModuleHandleByHash&lt;/code&gt;, is a means of dynamically resolving and obtaining a module handle given a hash of the module name. This is typically seen in malware code, as it helps to avoid static strings (like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;kernel32.dll&quot;&lt;/code&gt;) that could be easily spotted by antivirus heuristic algorithms. This technique increases the difficulty of static analysis.&lt;/p&gt;
+
+&lt;p&gt;The function works as follows:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;It begins by reading the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Thread Environment Block (TEB)&lt;/code&gt; via inline assembly code. This is a structure that Windows maintains per thread to store thread-specific information. The structure of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TEB&lt;/code&gt; and the offsets used indicate that it’s retrieving the first entry in the InLoadOrderModuleList, which is a doubly linked list of loaded modules in the order they were loaded. This is a common way to get a list of loaded modules without calling any APIs like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EnumProcessModules&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Once it has the first module, it enters a loop where it processes each module in turn. For each module, it converts the module name to lower case and computes its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CRC32&lt;/code&gt; hash (using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Crc32Hash&lt;/code&gt; function).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If the computed hash matches the input hash, it returns the base address of the module (which is effectively the same as the module handle, for the purpose of calling &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetProcAddress&lt;/code&gt;).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If the hash does not match, it moves to the next module in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InLoadOrderModuleList&lt;/code&gt; and repeats the process.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If it has checked all the modules and not found a match, it returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NULL&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Note that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LDR_MODULE&lt;/code&gt; and its linked list structures are part of the &lt;em&gt;Windows Native API&lt;/em&gt; (also known as the &lt;em&gt;“NT API”&lt;/em&gt;), which is an internal API used by Windows itself. It’s not officially documented by Microsoft, so using it can be risky: it can change between different versions or updates of Windows. However, it also provides a way to do things that can’t be done with the standard Windows API, so it’s often used in low-level code like device drivers or, in this case, bootkit malware.&lt;/p&gt;
+
+&lt;p&gt;Also we have files like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;advapi32_functions.h&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ntdll_functions.h&lt;/code&gt;  or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user32_functions.h&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_13-58.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This piece of code is a C++ header files that defines function pointers to a Windows API functions like: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VirtualAlloc&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OpenProcess&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process32FirstW&lt;/code&gt; or NT API structures and functions:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_14-03.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;These are being defined as function pointers rather than directly calling the functions because this can make it easier to dynamically load these functions at runtime. This can be useful in a few scenarios, such as when writing code that needs to run on multiple versions of Windows and not all functions may be available on all versions, and in our case when trying to evade detection by anti-malware tools (since these tools often flag direct calls to certain API functions as suspicious).&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetProcAddressByHash&lt;/code&gt; function in the given code is designed to look up a function in a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DLL&lt;/code&gt; using the hash of the function’s name, rather than the name itself. This is typically used in malware to make static analysis harder, as it avoids leaving clear text strings (like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;CreateProcess&quot;&lt;/code&gt;) in the binary that can be easily identified:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-30.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This code also assumes that it’s running on the same architecture as the DLL it’s examining, i.e., if the code is compiled for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;64-bit&lt;/code&gt; target, it assumes the DLL is also &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;64-bit&lt;/code&gt;, and vice versa for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;32-bit&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;It’s worth noting that manipulating the PE file format and using hashed function names like this is a common technique used in malware and rootkits to make analysis and detection more difficult.&lt;/p&gt;
+
+&lt;p&gt;Also interesting file is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nzt.h&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-33.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, function pointer macro: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;API(Function)&lt;/code&gt; is a macro that expands to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NzT.Api.p##Function&lt;/code&gt;. This is likely used to call function pointers stored in an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;API_FUNCTIONS&lt;/code&gt; structure, which is part of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NzT_T&lt;/code&gt; struct.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NzT_T&lt;/code&gt; is a structure that bundles together various components of the bot’s functionality, including an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;API_FUNCTIONS&lt;/code&gt; structure for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;API&lt;/code&gt; function pointers, an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;API_MODULES&lt;/code&gt; structure for loaded module information, a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CRC&lt;/code&gt; type (for checksum calculations), and an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INFECTION_TYPE&lt;/code&gt; field indicating the infection status of the bot.&lt;/p&gt;
+
+&lt;h3 id=&quot;windows-registry&quot;&gt;Windows Registry&lt;/h3&gt;
+
+&lt;p&gt;Then, in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;registry.c&lt;/code&gt; file implements functions for interacting with the Windows Registry:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-43.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetRegistryStartPath(INT Hive)&lt;/code&gt; - This function is used to get the start path of the registry hive, based on the hive type passed to it (e.g., &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HKEY_LOCAL_MACHINE&lt;/code&gt;). The path is formatted into the form expected by the Windows kernel functions, which is a bit different from what you might usually see (e.g., &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;\Registry\Machine&quot;&lt;/code&gt; instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HKEY_LOCAL_MACHINE&lt;/code&gt;). The function returns this path as a wide character string (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LPWSTR&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-53.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegistryOpenKeyEx(CONST LPWSTR KeyPath, HANDLE RegistryHandle, ACCESS_MASK AccessMask)&lt;/code&gt; - This function is used to open a specific key in the registry, given its path, a handle to a pre-existing key (or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NULL&lt;/code&gt; for the root of the registry), and an access mask specifying what type of access the function caller requires to the key (e.g., &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KEY_READ&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KEY_WRITE&lt;/code&gt;). It uses the NtOpenKey API function from the Windows Native API to actually open the key:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-54.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegistryReadValueEx(CONST LPWSTR KeyPath, CONST LPWSTR Name, LPWSTR* Value)&lt;/code&gt; - This function reads a value from a given key in the registry. It does this by opening the key with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegistryOpenKeyEx&lt;/code&gt;, then querying the value with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NtQueryValueKey&lt;/code&gt;. The function reads the value’s data into a buffer, which it then returns to the caller. If anything goes wrong (e.g., the key couldn’t be opened, the value couldn’t be queried, there wasn’t enough memory to store the value’s data), the function returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FALSE&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-55.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegistryReadValue(INT Hive, CONST LPWSTR Path, CONST LPWSTR Name, LPWSTR* Value)&lt;/code&gt; - This function combines the functionality of the other functions. It reads a value from a specific key in a specific hive of the registry. It constructs the full path to the key by concatenating the start path of the hive (obtained with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetRegistryStartPath&lt;/code&gt;) and the rest of the key path passed to the function. It then reads the value from this key with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RegistryReadValueEx&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-55_1.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There are also two functions, but they are not used anywhere and are commented out:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-56.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;filesystem&quot;&gt;Filesystem&lt;/h3&gt;
+
+&lt;p&gt;There are also separate functions for working with files in Windows OS - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;file.c&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_17-59.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;which implements such functions as, for example &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileGetInfo&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileGetSize&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileOpen&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileWrite&lt;/code&gt;, etc.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileGetInfo(HANDLE FileHandle, PFILE_STANDARD_INFORMATION Info)&lt;/code&gt; - This function retrieves standard information about a file. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NtQueryInformationFile&lt;/code&gt; function is used to retrieve the information. It takes a handle to an open file and a pointer to a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FILE_STANDARD_INFORMATION&lt;/code&gt; structure to fill with information. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MemoryZero&lt;/code&gt; function is used to clear these structures before use.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FILE_STANDARD_INFORMATION&lt;/code&gt; structure includes several file attributes such as the allocation size of the file, the end of the file, the number of links to the file, and flags to indicate if the file is a directory or if it is deleted. If the operation is successful, the function returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TRUE&lt;/code&gt;. If the operation fails, it returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FALSE&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileGetSize(HANDLE FileHandle, PDWORD FileSize)&lt;/code&gt; - This function retrieves the size of a file. It does so by calling &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileGetInfo&lt;/code&gt; to get the standard information of the file, and then sets the value pointed to by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileSize&lt;/code&gt; to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AllocationSize.LowPart&lt;/code&gt; of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FILE_STANDARD_INFORMATION&lt;/code&gt; structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-07.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AllocationSize&lt;/code&gt; is a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LARGE_INTEGER&lt;/code&gt; (which is a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;64-bit&lt;/code&gt; value), and this function is only returning the lower 32 bits of it, which may be incorrect for files larger than &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;4GB&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;injections&quot;&gt;Injections&lt;/h3&gt;
+
+&lt;p&gt;Another functions from source code of investigated malware, for injection logic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-11.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LPVOID&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InjectData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;HANDLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;LPVOID&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;DWORD&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-13.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here’s a breakdown of what the function does:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NzT.Api.pVirtualAllocEx(Process, NULL, Size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)&lt;/code&gt; - It starts by allocating memory within the virtual memory space of a target process. The size of the allocated memory is specified by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Size&lt;/code&gt; parameter. The memory is both committed (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MEM_COMMIT&lt;/code&gt;) and reserved (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MEM_RESERVE&lt;/code&gt;) for future use. The allocated memory has read, write, and execute permissions (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PAGE_EXECUTE_READWRITE&lt;/code&gt;). The address of the allocated memory is saved in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Address&lt;/code&gt; variable. If this operation fails, the function returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NULL&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NzT.Api.pWriteProcessMemory(Process, Address, Data, Size, NULL)&lt;/code&gt; - If memory allocation is successful, the function proceeds to write data into the allocated memory within the target process. It does this using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WriteProcessMemory&lt;/code&gt; function. This function copies data from a buffer (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Data&lt;/code&gt;) in the current process to the allocated memory (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Address&lt;/code&gt;) in the target process. If the operation fails, it frees the allocated memory using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VirtualFreeEx&lt;/code&gt; and returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NULL&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If both operations are successful, the function returns the address of the allocated memory in the target process. This can then be used for various purposes, such as executing the injected code.&lt;/p&gt;
+
+&lt;p&gt;This type of functionality is often seen in malware that injects malicious code into legitimate processes to hide its activities or gain higher privileges.&lt;/p&gt;
+
+&lt;p&gt;What about this injection logic?&lt;/p&gt;
+
+&lt;div class=&quot;language-cpp highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;DWORD&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InjectCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;HANDLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;LPVOID&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;which also implemented in this file:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-17.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This function appears to inject code into a target process by creating a section of memory, copying the code into this section, performing relocations, and finally mapping this section into the target process.&lt;/p&gt;
+
+&lt;p&gt;Once all the tasks are performed, the function will clean up by closing any open handles and unmap any mapped views of files. Finally, it will return the address of the injected function in the target process.&lt;/p&gt;
+
+&lt;p&gt;As with many other kinds of code injection techniques, this one is also commonly seen in malware.&lt;/p&gt;
+
+&lt;h3 id=&quot;pseudo-random-generator&quot;&gt;Pseudo-Random Generator&lt;/h3&gt;
+
+&lt;p&gt;And there are several functions in this malware &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;guid.c&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-22.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;These functions are designed to generate a pseudo-random &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID (Globally Unique Identifier)&lt;/code&gt;. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID&lt;/code&gt; is built from the values produced by a simple linear congruential generator (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LCG&lt;/code&gt;), which is a type of pseudorandom number generator.&lt;/p&gt;
+
+&lt;p&gt;Here’s what each function does:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GuidRandom(PDWORD Seed)&lt;/code&gt; - This is a linear congruential generator (LCG) function that takes a seed as a parameter and generates a pseudorandom number. It’s important to note that this LCG function always produces the same sequence of numbers if the initial seed is the same:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-24.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GuidGenerate(GUID * Guid, PDWORD Seed)&lt;/code&gt; - This function takes a pointer to a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID&lt;/code&gt; structure and a pointer to a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DWORD  seed&lt;/code&gt; as parameters. It generates a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID&lt;/code&gt; by calling &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GuidRandom(Seed)&lt;/code&gt; to generate pseudorandom numbers and assign them to the four parts of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID&lt;/code&gt; structure (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Data1, Data2, Data3, Data4&lt;/code&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-25.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GuidGenerateEx(PDWORD Seed)&lt;/code&gt; - This function generates a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID&lt;/code&gt; string. It calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GuidGenerate(&amp;amp;Guid, Seed)&lt;/code&gt; to generate a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID&lt;/code&gt; and then converts this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUID&lt;/code&gt; to a string format with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GuidToString(&amp;amp;Guid)&lt;/code&gt;. This string is then copied to a newly allocated memory block, and a pointer to this block is returned:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-27.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As for the context of malware, the generated GUIDs might be used for a variety of purposes including marking infected systems, communicating with command-and-control (C2) servers, or creating mutexes to avoid multiple instances of the malware. In our case, this functions used for generate Bot ID.&lt;/p&gt;
+
+&lt;h3 id=&quot;utils&quot;&gt;Utils&lt;/h3&gt;
+
+&lt;p&gt;There is also a file with utilities where there are a lot of auxiliary functions &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;utils.c&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-33.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;For example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetProcessIdByHandle (HANDLE Process)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-37.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This function, retrieves the unique process ID of a process given a handle to the process.&lt;/p&gt;
+
+&lt;p&gt;Or function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetProcessIdByHash(DWORD Hash)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-40.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;which returns the Process ID (PID) of a process given its hash. This function scans all running processes on the system and returns the PID of the process whose executable name matches the provided hash.&lt;/p&gt;
+
+&lt;p&gt;The function creates a snapshot of all processes currently running on the system by calling the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CreateToolhelp32Snapshot&lt;/code&gt; function. If the snapshot creation fails, it returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-1&lt;/code&gt; to indicate the failure. It then retrieves the first process in the snapshot using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process32FirstW&lt;/code&gt; function. If this function fails, it closes the snapshot handle and returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-1&lt;/code&gt; to indicate the failure. The function then enters a loop, where it calculates the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CRC32&lt;/code&gt; hash of the current process’s executable name (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;szExeFile&lt;/code&gt;). It checks whether this calculated hash is equal to the input hash. If it is, the function breaks out of the loop and returns the Process ID (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;th32ProcessID&lt;/code&gt;) of the current process. If the hash doesn’t match, it proceeds to the next process in the snapshot using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Process32NextW&lt;/code&gt; function and repeats previous steps. After the loop, it closes the snapshot handle and returns the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PID&lt;/code&gt; of the process with the matching hash. If no matching process was found, it returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CreateMutexOfProcess(DWORD ProcessID)&lt;/code&gt; function is attempting to create a mutex (a synchronization object) with a unique name based on the process ID and the serial number of the disk volume (which is obtained by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetSerialNumber()&lt;/code&gt; function):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_18-58.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A mutex can be used to prevent multiple instances of a malware or application from running at the same time. In this case, the mutex name is generated by concatenating the disk volume’s serial number and the process ID, which should provide a unique mutex for each running instance of the process.&lt;/p&gt;
+
+&lt;p&gt;Also, interesting logic in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;destroyOS()&lt;/code&gt; function:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_19-02.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;but it’s also commented.&lt;/p&gt;
+
+&lt;p&gt;That’s all today. In the next part we will investigate another modules.&lt;/p&gt;
+
+&lt;p&gt;We hope this post spreads awareness to the blue teamers of this interesting malware techniques, and adds a weapon to the red teamers arsenal.&lt;/p&gt;
+
+&lt;p&gt;By Cyber Threat Hunters from MSSPLab:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/zhassulan-zhussupov-5a347419b/&quot;&gt;@cocomelonc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/aruzhan-kaldybek-775735226&quot;&gt;@wqkasper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/ldpreload/BlackLotus&quot;&gt;https://github.com/ldpreload/BlackLotus&lt;/a&gt;      &lt;br /&gt;
+&lt;a href=&quot;https://malpedia.caad.fkie.fraunhofer.de/details/win.asyncrat&quot;&gt;https://malpedia.caad.fkie.fraunhofer.de/details/win.asyncrat&lt;/a&gt;   &lt;br /&gt;
+&lt;a href=&quot;https://twitter.com/threatintel/status/1679906101838356480&quot;&gt;https://twitter.com/threatintel/status/1679906101838356480&lt;/a&gt;    &lt;br /&gt;
+&lt;a href=&quot;https://twitter.com/TheCyberSecHub/status/1680044350820999168&quot;&gt;https://twitter.com/TheCyberSecHub/status/1680044350820999168&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system.</summary></entry><entry><title type="html">Malware analysis report: BlackCat ransomware</title><link href="http://localhost:4001/threat-hunting/2023/07/13/malware-analysis-blackcat.html" rel="alternate" type="text/html" title="Malware analysis report: BlackCat ransomware" /><published>2023-07-13T05:00:00+03:00</published><updated>2023-07-13T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/07/13/malware-analysis-blackcat</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/07/13/malware-analysis-blackcat.html">&lt;p&gt;&lt;strong&gt;BlackCat&lt;/strong&gt; is Rust-based ransomware distributed via the &lt;em&gt;Ransomware-as-a-Service (RaaS)&lt;/em&gt; model. BlackCat was observed for the first time in November 2021 and has since been used to target multiple sectors and organizations in numerous countries and regions in Africa, the Americas, Asia, Australia, and Europe.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/blackcat.png&quot; alt=&quot;blackcat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This ransomware and group caught our attention after this interesting news: &lt;em&gt;“ALPHV ransomware group claims to have ransomed Maruchan, the company that creates instant noodles.”&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_01-31.png&quot; alt=&quot;cat&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The name “BlackCat” was mentioned first by MalwareHunterTeam&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/vxunderground/status/1679128724489289728&quot;&gt;https://twitter.com/vxunderground/status/1679128724489289728&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;technical-summary&quot;&gt;Technical summary&lt;/h3&gt;
+
+&lt;p&gt;This ransomware encrypts the data of business users and corporate networks using the algorithms &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AES-128&lt;/code&gt; (CTR mode) and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RSA-2048&lt;/code&gt;, and then demands a hefty ransom payment in BTC or Monero to decrypt the files. Instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AES&lt;/code&gt;, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ChaCha20&lt;/code&gt; algorithm can be used. The configuration file is consulted to retrieve the global public key used to encrypt local credentials. Original title: &lt;em&gt;ALPHV-ng RaaS&lt;/em&gt;. A striking example of using the Rust programming language. eSXI is capable of encrypting data on Windows, Linux, and VMWare systems.&lt;/p&gt;
+
+&lt;h3 id=&quot;threat-actor&quot;&gt;Threat Actor&lt;/h3&gt;
+
+&lt;p&gt;Most of threat hunting labs, also MSSP Lab has observed one of these RaaS providers, ALPHV (also known as BlackCat ransomware), gathering traction since late 2021, actively recruiting new affiliates and targeting organizations in a variety of industries across the globe. The organization actively recruits former REvil, BlackMatter, and DarkSide operators. A campaign to attract new affiliates started to be advertised on underground forums:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_01-09.png&quot; alt=&quot;cat&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_01-26.png&quot; alt=&quot;cat&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_01-28.png&quot; alt=&quot;cat&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;identification&quot;&gt;Identification&lt;/h3&gt;
+
+&lt;p&gt;Samples is being investigated:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;sample.exe&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;File size: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2281472 bytes&lt;/code&gt;  &lt;br /&gt;
+MD5 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;aea5d3cced6725f37e2c3797735e6467&lt;/code&gt;   &lt;br /&gt;
+SHA-1 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;087497940a41d96e4e907b6dc92f75f4a38d861a&lt;/code&gt;  &lt;br /&gt;
+SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3d7cf20ca6476e14e0a026f9bdd8ff1f26995cdc5854c3adb41a6135ef11ba83&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;First of all, check our sample via VirusTotal:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.virustotal.com/gui/file/3d7cf20ca6476e14e0a026f9bdd8ff1f26995cdc5854c3adb41a6135ef11ba83/details&quot;&gt;https://www.virustotal.com/gui/file/3d7cf20ca6476e14e0a026f9bdd8ff1f26995cdc5854c3adb41a6135ef11ba83/details&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_01-43.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;As we can see, 60 of 71 AV engines detect our sample as malicious.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;and the most interesting sample written in Rust:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;sample2.exe&lt;/em&gt;:&lt;/p&gt;
+
+&lt;p&gt;File size: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2281472 bytes&lt;/code&gt;  &lt;br /&gt;
+MD5 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;701b4b004eecb69046c210237846d46d&lt;/code&gt;   &lt;br /&gt;
+SHA-1 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;8c70191b12f14eed594388c8fbe05efe6ebaa564&lt;/code&gt;  &lt;br /&gt;
+SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6dd995d896a9a593b2c48d09da60bd83866d8577273f36d38788d83ad8173e68&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;which also checked via VirusTotal:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.virustotal.com/gui/file/6dd995d896a9a593b2c48d09da60bd83866d8577273f36d38788d83ad8173e68&quot;&gt;https://www.virustotal.com/gui/file/6dd995d896a9a593b2c48d09da60bd83866d8577273f36d38788d83ad8173e68&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_03-57.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;As we can see, 55 of 70 AV engines detect our sample as malicious.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;More of the detect it as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Win.Ransomware.BlackCat-9974801-0&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;static-analysis&quot;&gt;Static analysis&lt;/h3&gt;
+
+&lt;p&gt;&lt;em&gt;sample.exe&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The specified sample is a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;32-bit&lt;/code&gt; PE file:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_01-50.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hexdump &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_02-12.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exiftool&lt;/code&gt; for looking metadata:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;exiftool &amp;lt;sample.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_02-14.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;File timestamp is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2021:11:18 05:04:28-05:00&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Compiled via &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MinGW&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_02-17.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Shannon entropy:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_02-20.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;sample2.exe&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The specified sample is a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;32-bit&lt;/code&gt; PE file:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;file &amp;lt;sample2.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-08.png&quot; alt=&quot;vt&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hexdump &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; &amp;lt;sample2.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-08_1.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;exiftool&lt;/code&gt; for looking metadata:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;exiftool &amp;lt;sample2.exe&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-08_2.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Linker information &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GNU binutils&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-06.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Entropy:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-09.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-11.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-11_1.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dynamic-analysis&quot;&gt;Dynamic analysis&lt;/h3&gt;
+
+&lt;p&gt;Can be distributed via hacking via an insecure RDP configuration, email spam and malicious attachments, inaccurate downloads, botnets, exploits, malicious advertisements, web injections, fake updates, repackaged and infected installers.&lt;/p&gt;
+
+&lt;p&gt;Ransom Note:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;» Introduction
+Important files on your system was ENCRYPTED and now they have have &lt;span class=&quot;s2&quot;&gt;&quot;sykffle&quot;&lt;/span&gt; extension.
+In order to recover your files you need to follow instructions below.
+» Sensitive Data
+Sensitive data on your system was downloaded and it will be published &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you refuse to cooperate.
+Data includes:
+- Employees personal data, CVs, DL , SSN.
+- Complete network map including credentials &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;and remote services.
+- Financial information including clients data, bills, budgets, annual reports, bank statements.
+- Complete datagrams/schemas/drawings &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;manufacturing &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;solidworks format
+- And more...
+Private preview is published here: hxxx://zujgzbu5y64xbmvc42addp4lxkoosb4tslf5mehnh7pvqjpwxn5gokyd.onion/&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt;
+» CAUTION
+DO NOT MODIFY FILES YOURSELF.
+DO NOT USE THIRD PARTY SOFTWARE TO RESTORE YOUR DATA.
+YOU MAY DAMAGE YOUR FILES, IT WILL RESULT IN PERMANENT DATA LOSS.
+YOUR DATA IS STRONGLY ENCRYPTED, YOU CAN NOT DECRYPT IT WITHOUT CIPHER KEY.
+» Recovery procedure
+Follow these simple steps to get &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;and recover your data:
+1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Download and &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;Tor Browser from: https://torprojoject.org
+2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Navigate to: hxxx://mu75ltv3lxd24dbyu6gtvmnwybecigs5auki7fces437xvvflzva2nqd.onion/?access-key&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Second sample is written in Rust:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_14-15.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_14-16.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Initialisation and propagation&lt;/strong&gt; - BlackCat samples that we analyzed could be launched with any string provided as the access token:&lt;/p&gt;
+
+&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;\sample.exe&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--access-token&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;1234567&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_00-33.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The malware will immediately attempt to validate the existence of the aforementioned &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;access-token&lt;/code&gt;, followed by a query for the system UUID:&lt;/p&gt;
+
+&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cmd.exe&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;/c&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;wmic&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;csproduct&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;UUID&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Also, it employs the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetCommandLineW&lt;/code&gt; API to determine whether the supplied access token is valid:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-34.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;BlackCat spawns a number of its own processes, with the following syntax (for Windows):&lt;/p&gt;
+
+&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;wmic.exe&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Shadowcopy&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Delete&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;
+&quot;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;iisreset.exe&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;/stop&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;
+bcdedit.exe /set {default} recoveryenabled No
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;/c&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;vssadmin.exe&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shadows&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;/all&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;/quiet&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, in order to prevent the organization from restoring encrypted files, the ransomware first deletes any available shadow copies, as is characteristic of ransomware attacks.&lt;/p&gt;
+
+&lt;p&gt;BlackCat also attempts to propagate via &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PsExec&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_05-09.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Privilege Escalation&lt;/strong&gt; - Using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CoGetObject&lt;/code&gt;, the ransomware registers itself with the CLSID &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3E5FC7F9-9A51-4367-9063-A120244FBEC7&lt;/code&gt;, which is legitimately used to execute applications with elevated privileges. This technique enables the malware to circumvent the UAC prompt and execute its malicious actions without being detected or blocked by the system’s security measures.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_04-48.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Anti-disassembly&lt;/strong&gt; -  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sleep&lt;/code&gt; function make stepping through code in a debugger more time-consuming and thus complicate the process of reverse engineering:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_13-58.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Terminating all active services and processes&lt;/strong&gt; - BlackCat will now attempt to terminate any processes or services specified in the configuration, such as processes that may inhibit the encryption procedure.&lt;/p&gt;
+
+&lt;p&gt;Kill services:&lt;/p&gt;
+
+&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;backup&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;memtas&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mepocs&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;msexchange&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;svc&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;veeam&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;vss&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and processes:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;&quot;kill_processes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;encsvc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;thebat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;mydesktopqos&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;xfssvccon&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;firefox&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;infopath&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;winword&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;steam&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;synctime&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;notepad&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;ocomm&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;onenote&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;mspub&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;thunderbird&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;agntsvc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;sql&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;excel&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;powerpnt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;outlook&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;wordpad&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;dbeng50&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;isqlplussvc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;sqbcoreservice&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;oracle&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;ocautoupds&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;dbsnmp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;msaccess&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;tbirdconfig&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;ocssd&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;mydesktopservice&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&quot;visio&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Encryption process&lt;/strong&gt; - BlackCat initially traverses the system using a cycle of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FindFirstFile&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FindNextFile&lt;/code&gt; to locate all system files:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/photo_2023-07-14_12-11-41.jpg&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/photo_2023-07-14_13-12-25.jpg&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then ransom note is written using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WriteFile&lt;/code&gt; to each directory:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_13-40.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BCryptGenRandom&lt;/code&gt;, the ransomware calculates a random &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AES&lt;/code&gt; key:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_14-06.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_14-10.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_14-11.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The file’s contents are written to the file using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ReadFile&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WriteFile&lt;/code&gt; after it has been encrypted with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AES&lt;/code&gt;. The new file extension is listed in the BlackCat configuration.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_14-33.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We created a simple BlackCat Ransomware configuration extractor:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;hashlib&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;json&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;binascii&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;argparse&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sys&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;typing&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Union&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BlackCatConfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__str__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;output&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;output&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;output&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calc_md5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hasher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hashlib&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hasher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hasher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hexdigest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calc_sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hasher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hashlib&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hasher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hasher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hexdigest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_file_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;st_size&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;scan_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Union&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argparse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ArgumentParser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'BlackCat Ransomware conf extractor'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-j'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'--json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'store_true'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'dump extracted config to a json file'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'file'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path to sample'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parse_args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'rb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;file size (bytes): &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_file_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;MD5: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calc_md5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SHA-256: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calc_sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;off&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scan_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;binascii&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unhexlify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;7B22636F6E6669675F696422&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# = {&quot;config_id&quot;
+&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;off&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;unable to find config offset :(&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;cfg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;off&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;off&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;blackCat_config-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calc_md5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.json&quot;&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'w'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jsonOutput&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;jsonOutput&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cfg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'utf-8'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;wrote &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cfg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; bytes to &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BlackCatConfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cfg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;an error occurred: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After BlackCat has finished encrypting all files on the system, the desktop wallpaper is altered to direct the user to the ransom note.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/8/2023-07-14_14-55.png&quot; alt=&quot;file&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;ioc&quot;&gt;IOC&lt;/h3&gt;
+
+&lt;p&gt;Another samples (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SHA-256&lt;/code&gt;):&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;0c6f444c6940a3688ffc6f8b9d5774c032e3551ebbccb64e4280ae7fc1fac479&lt;/li&gt;
+  &lt;li&gt;13828b390d5f58b002e808c2c4f02fdd920e236cc8015480fa33b6c1a9300e31&lt;/li&gt;
+  &lt;li&gt;15b57c1b68cd6ce3c161042e0f3be9f32d78151fe95461eedc59a79fc222c7ed&lt;/li&gt;
+  &lt;li&gt;1af1ca666e48afc933e2eda0ae1d6e88ebd23d27c54fd1d882161fd8c70b678e&lt;/li&gt;
+  &lt;li&gt;2587001d6599f0ec03534ea823aab0febb75e83f657fadc3a662338cc08646b0&lt;/li&gt;
+  &lt;li&gt;28d7e6fe31dc00f82cb032ba29aad6429837ba5efb83c2ce4d31d565896e1169&lt;/li&gt;
+  &lt;li&gt;2cf54942e8cf0ef6296deaa7975618dadff0c32535295d3f0d5f577552229ffc&lt;/li&gt;
+  &lt;li&gt;38834b796ed025563774167716a477e9217d45e47def20facb027325f2a790d1&lt;/li&gt;
+  &lt;li&gt;3d7cf20ca6476e14e0a026f9bdd8ff1f26995cdc5854c3adb41a6135ef11ba83&lt;/li&gt;
+  &lt;li&gt;40f57275721bd74cc59c0c59c9f98c8e0d1742b7ae86a46e83e985cc4039c3a5&lt;/li&gt;
+  &lt;li&gt;4e18f9293a6a72d5d42dad179b532407f45663098f959ea552ae43dbb9725cbf&lt;/li&gt;
+  &lt;li&gt;59868f4b346bd401e067380cac69080709c86e06fae219bfb5bc17605a71ab3f&lt;/li&gt;
+  &lt;li&gt;5bdc0fb5cfbd42de726aacc40eddca034b5fa4afcc88ddfb40a3d9ae18672898&lt;/li&gt;
+  &lt;li&gt;658e07739ad0137bceb910a351ce3fe4913f6fcc3f63e6ff2eb726e45f29e582&lt;/li&gt;
+  &lt;li&gt;731adcf2d7fb61a8335e23dbee2436249e5d5753977ec465754c6b699e9bf161&lt;/li&gt;
+  &lt;li&gt;7b2449bb8be1b37a9d580c2592a67a759a3116fe640041d0f36dc93ca3db4487&lt;/li&gt;
+  &lt;li&gt;7e363b5f1ba373782261713fa99e8bbc35ddda97e48799c4eb28f17989da8d8e&lt;/li&gt;
+  &lt;li&gt;bd337d4e83ab1c2cacb43e4569f977d188f1bb7c7a077026304bf186d49d4117&lt;/li&gt;
+  &lt;li&gt;be8c5d07ab6e39db28c40db20a32f47a97b7ec9f26c9003f9101a154a5a98486&lt;/li&gt;
+  &lt;li&gt;c3e5d4e62ae4eca2bfca22f8f3c8cbec12757f78107e91e85404611548e06e40&lt;/li&gt;
+  &lt;li&gt;c5ad3534e1c939661b71f56144d19ff36e9ea365fdb47e4f8e2d267c39376486&lt;/li&gt;
+  &lt;li&gt;c8b3b67ea4d7625f8b37ba59eed5c9406b3ef04b7a19b97e5dd5dab1bd59f283&lt;/li&gt;
+  &lt;li&gt;cefea76dfdbb48cfe1a3db2c8df34e898e29bec9b2c13e79ef40655c637833ae&lt;/li&gt;
+  &lt;li&gt;f815f5d6c85bcbc1ec071dd39532a20f5ce910989552d980d1d4346f57b75f89&lt;/li&gt;
+  &lt;li&gt;f837f1cd60e9941aa60f7be50a8f2aaaac380f560db8ee001408f35c1b7a97cb&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Bitcoin: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1H3JFbyiwv6YeVW7K2mVjxHgNvJdXqJxiP&lt;/code&gt;   &lt;br /&gt;
+Monero: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;46JqTG57Pv6GBRzjM9kHyCF8XHrAo9sr8dLuvqwcGbxT92dUAW12QpgZJnu32KrTfL1BzLp2sBi9G49JyXuRaKmT6JrJL9r&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;yara-rules&quot;&gt;Yara rules&lt;/h3&gt;
+
+&lt;p&gt;Yara rule for BlackCat Ransomware threat hunting:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;rule win_blackcat_auto {&lt;/span&gt;
+
+    &lt;span class=&quot;s&quot;&gt;meta&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;author = &quot;Felix Bilstein - yara-signator at cocacoding dot com&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;date = &quot;2023-03-28&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;version = &quot;1&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;description = &quot;Detects win.blackcat.&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;info = &quot;autogenerated rule brought to you by yara-signator&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;tool = &quot;yara-signator v0.6.0&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;signator_config = &quot;callsandjumps;datarefs;binvalue&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_reference = &quot;https://malpedia.caad.fkie.fraunhofer.de/details/win.blackcat&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_rule_date = &quot;20230328&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_hash = &quot;9d2d75cef573c1c2d861f5197df8f563b05a305d&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_version = &quot;20230407&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_license = &quot;CC BY-SA 4.0&quot;&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;malpedia_sharing = &quot;TLP:WHITE&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;s&quot;&gt;/* DISCLAIMER&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* The strings used in this rule have been automatically selected from the&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* disassembly of memory dumps and unpacked files, using YARA-Signator.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* The code and documentation is published here&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;     *&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://github.com/fxb-cocacoding/yara-signator&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* As Malpedia is used as data source, please note that for a given&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* number of families, only single samples are documented.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* This likely impacts the degree of generalization these rules will offer.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* Take the described generation method also into consideration when you&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;* apply the rules in your use cases and assign them confidence levels.&lt;/span&gt;
+     &lt;span class=&quot;s&quot;&gt;*/&lt;/span&gt;
+
+
+    &lt;span class=&quot;s&quot;&gt;strings&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;$sequence_0 = { c3 81f90a010000 7e6a 81f9e2030000 0f8fcc000000 81f90b010000 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 6, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   c3                   | ret&lt;/span&gt;                 
+            &lt;span class=&quot;s&quot;&gt;//   81f90a010000         | cmp                 ecx, 0x10a&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   7e6a                 | jle                 0x6c&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   81f9e2030000         | cmp                 ecx, 0x3e2&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   0f8fcc000000         | jg                  0xd2&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   81f90b010000         | cmp                 ecx, 0x10b&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_1 = { 85f6 0f8482000000 bb03000000 8d0437 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 4, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   85f6                 | test                esi, esi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   0f8482000000         | je                  0x88&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   bb03000000           | mov                 ebx, &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8d0437               | lea                 eax, [edi + esi]&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_2 = { 885405cc 48 eb19 89ca 83fa63 7fbe }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 6, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   885405cc             | mov                 byte ptr [ebp + eax - 0x34], dl&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   48                   | dec                 eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   eb19                 | jmp                 0x1b&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   89ca                 | mov                 edx, ecx&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   83fa63               | cmp                 edx, 0x63&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   7fbe                 | jg                  0xffffffc0&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_3 = { f20f104808 8d45d4 894dec c645f004 8d4dec }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 5, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   f20f104808           | movsd               xmm1, qword ptr [eax + 8]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8d45d4               | lea                 eax, [ebp - 0x2c]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   894dec               | mov                 dword ptr [ebp - 0x14], ecx&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   c645f004             | mov                 byte ptr [ebp - 0x10], &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8d4dec               | lea                 ecx, [ebp - 0x14]&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_4 = { 3d32210000 747b 3d33210000 0f8571050000 8b07 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 5, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   3d32210000           | cmp                 eax, 0x2132&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   747b                 | je                  0x7d&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   3d33210000           | cmp                 eax, 0x2133&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   0f8571050000         | jne                 0x577&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8b07                 | mov                 eax, dword ptr [edi]&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_5 = { b005 5e 5d c3 81f90a010000 7e6a 81f9e2030000 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 7, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   b005                 | mov                 al, &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   5e                   | pop                 esi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   5d                   | pop                 ebp&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   c3                   | ret&lt;/span&gt;                 
+            &lt;span class=&quot;s&quot;&gt;//   81f90a010000         | cmp                 ecx, 0x10a&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   7e6a                 | jle                 0x6c&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   81f9e2030000         | cmp                 ecx, 0x3e2&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_6 = { 747b 3d33210000 0f8571050000 8b07 83f00a }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 5, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   747b                 | je                  0x7d&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   3d33210000           | cmp                 eax, 0x2133&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   0f8571050000         | jne                 0x577&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8b07                 | mov                 eax, dword ptr [edi]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   83f00a               | xor                 eax, 0xa&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_7 = { b806000000 c7460400000000 894608 c70601000000 83c430 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 5, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   b806000000           | mov                 eax, &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;6&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   c7460400000000       | mov                 dword ptr [esi + 4], &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   894608               | mov                 dword ptr [esi + 8], eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   c70601000000         | mov                 dword ptr [esi], &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   83c430               | add                 esp, 0x30&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_8 = { 89d0 ba3e000000 897e0c f7e2 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 4, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   89d0                 | mov                 eax, edx&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   ba3e000000           | mov                 edx, 0x3e&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   897e0c               | mov                 dword ptr [esi + 0xc], edi&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   f7e2                 | mul                 edx&lt;/span&gt;
+
+        &lt;span class=&quot;s&quot;&gt;$sequence_9 = { c6410b00 66c741090000 8b45ec 894110 c7411400000000 b801000000 8901 }&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;// n = 7, score = &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;600&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   c6410b00             | mov                 byte ptr [ecx + 0xb], &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   66c741090000         | mov                 word ptr [ecx + 9], &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8b45ec               | mov                 eax, dword ptr [ebp - 0x14]&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   894110               | mov                 dword ptr [ecx + 0x10], eax&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   c7411400000000       | mov                 dword ptr [ecx + 0x14], &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   b801000000           | mov                 eax, &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;//   8901                 | mov                 dword ptr [ecx], eax&lt;/span&gt;
+
+    &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;7 of them and filesize &amp;lt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;29981696&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;mitre-attck&quot;&gt;MITRE ATT&amp;amp;CK&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://attack.mitre.org/techniques/T1027/002/&quot;&gt;T1027.002&lt;/a&gt; - Obfuscated Files or Information: Software Packing    &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1027/&quot;&gt;T1027&lt;/a&gt; - Obfuscated Files or Information    &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1007/&quot;&gt;T1007&lt;/a&gt; - System Service Discovery  &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1059/&quot;&gt;T1059&lt;/a&gt; - Command and Scripting Interpreter      &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/tactics/TA0010/&quot;&gt;TA0010&lt;/a&gt; - Exfiltration    &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1082/&quot;&gt;T1082&lt;/a&gt; - System Information Discovery      &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1490/&quot;&gt;T1490&lt;/a&gt; - Inhibit System Recovery    &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1485/&quot;&gt;T1485&lt;/a&gt; - Data Destruction   &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1078/&quot;&gt;T1078&lt;/a&gt; - Valid Accounts       &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1486/&quot;&gt;T1486&lt;/a&gt; - Data Encrypted For Impact    &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1140/&quot;&gt;T1140&lt;/a&gt; - Encode/Decode Files or Information    &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1202/&quot;&gt;T1202&lt;/a&gt; - Indirect Command Execution   &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1543/003/&quot;&gt;T1543.003&lt;/a&gt; - Create or Modify System Process: Windows Service     &lt;br /&gt;
+&lt;a href=&quot;https://attack.mitre.org/techniques/T1550/002/&quot;&gt;T1550.002&lt;/a&gt; - Use Alternate Authentication Material: Pass The Hash&lt;/p&gt;
+
+&lt;p&gt;By Cyber Threat Hunters from MSSPLab:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/zhassulan-zhussupov-5a347419b/&quot;&gt;@cocomelonc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/aruzhan-kaldybek-775735226&quot;&gt;@wqkasper&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/madiyar-mukhamadiyev-306b37239/&quot;&gt;@mgmadr&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://attack.mitre.org/software/S1068/&quot;&gt;MITRE ATT&amp;amp;CK: BlackCat&lt;/a&gt;      &lt;br /&gt;
+&lt;a href=&quot;https://en.wikipedia.org/wiki/Salsa20&quot;&gt;Salsa20 wikipedia&lt;/a&gt;    &lt;br /&gt;
+&lt;a href=&quot;https://therecord.media/an-alphv-blackcat-representative-discusses-the-groups-plans-for-a-ransomware-meta-universe&quot;&gt;An ALPHV (BlackCat) representative discusses the group’s plans for a ransomware ‘meta-universe’&lt;/a&gt;   &lt;br /&gt;
+&lt;a href=&quot;https://malpedia.caad.fkie.fraunhofer.de/details/win.blackcat&quot;&gt;malpedia: BlackCat&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">BlackCat is Rust-based ransomware distributed via the Ransomware-as-a-Service (RaaS) model. BlackCat was observed for the first time in November 2021 and has since been used to target multiple sectors and organizations in numerous countries and regions in Africa, the Americas, Asia, Australia, and Europe.</summary></entry><entry><title type="html">DEFC: simple enumeration tool for detect AV/EDR</title><link href="http://localhost:4001/open-source/2023/07/03/open-source-1.html" rel="alternate" type="text/html" title="DEFC: simple enumeration tool for detect AV/EDR" /><published>2023-07-03T06:00:00+03:00</published><updated>2023-07-03T06:00:00+03:00</updated><id>http://localhost:4001/open-source/2023/07/03/open-source-1</id><content type="html" xml:base="http://localhost:4001/open-source/2023/07/03/open-source-1.html">&lt;p&gt;Hello, cybersecurity enthusiasts and white hackers!&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/7/2023-07-03_09-10.png&quot; alt=&quot;defc&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -145,7 +969,7 @@ avp.exe|Kaspersky
 &lt;a href=&quot;https://github.com/MSSPLab/defc&quot;&gt;source code in github&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
-&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="open-source" /><category term="redteam" /><category term="malware" /><category term="pentest" /><summary type="html">Hello, cybersecurity enthusiasts and white hackers!</summary></entry><entry><title type="html">Malware source code investigation: Paradise Ransomware</title><link href="http://localhost:4000/threat-hunting/2023/06/23/src-paradise.html" rel="alternate" type="text/html" title="Malware source code investigation: Paradise Ransomware" /><published>2023-06-23T05:00:00+03:00</published><updated>2023-06-23T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/06/23/src-paradise</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/06/23/src-paradise.html">&lt;p&gt;Paradise Ransomware is a type of malware that encrypts the files on the victims’ systems and then demands a ransom to recover the data. This ransomware family first appeared in 2017 and continues to be active with numerous variants identified over the years. The ransomware typically targets Windows operating systems, and it is distributed through multiple infection vectors, including malicious email attachments, compromised Remote Desktop Protocol (RDP), and exploit kits.&lt;/p&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="open-source" /><category term="redteam" /><category term="malware" /><category term="pentest" /><summary type="html">Hello, cybersecurity enthusiasts and white hackers!</summary></entry><entry><title type="html">Malware source code investigation: Paradise Ransomware</title><link href="http://localhost:4001/threat-hunting/2023/06/23/src-paradise.html" rel="alternate" type="text/html" title="Malware source code investigation: Paradise Ransomware" /><published>2023-06-23T05:00:00+03:00</published><updated>2023-06-23T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/06/23/src-paradise</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/06/23/src-paradise.html">&lt;p&gt;Paradise Ransomware is a type of malware that encrypts the files on the victims’ systems and then demands a ransom to recover the data. This ransomware family first appeared in 2017 and continues to be active with numerous variants identified over the years. The ransomware typically targets Windows operating systems, and it is distributed through multiple infection vectors, including malicious email attachments, compromised Remote Desktop Protocol (RDP), and exploit kits.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/6/paradise-ransom.png&quot; alt=&quot;paradise&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -381,7 +1205,7 @@ e375edc127182453ad7ed84ae3abac3759dded7265284af48015a165e439f26c  ./DP_Builder.c
 &lt;a href=&quot;https://www.trendmicro.com/en_us/research/23/d/rapture-a-ransomware-family-with-similarities-to-paradise.html&quot;&gt;Rapture, a Ransomware Family With Similarities to Paradise&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
-&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">Paradise Ransomware is a type of malware that encrypts the files on the victims’ systems and then demands a ransom to recover the data. This ransomware family first appeared in 2017 and continues to be active with numerous variants identified over the years. The ransomware typically targets Windows operating systems, and it is distributed through multiple infection vectors, including malicious email attachments, compromised Remote Desktop Protocol (RDP), and exploit kits.</summary></entry><entry><title type="html">Malware analysis report: Babuk ransomware</title><link href="http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk.html" rel="alternate" type="text/html" title="Malware analysis report: Babuk ransomware" /><published>2023-06-15T05:00:00+03:00</published><updated>2023-06-15T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/06/15/malware-analysis-babuk.html">&lt;p&gt;&lt;strong&gt;Babuk&lt;/strong&gt; is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread of new ransomware variants.&lt;/p&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">Paradise Ransomware is a type of malware that encrypts the files on the victims’ systems and then demands a ransom to recover the data. This ransomware family first appeared in 2017 and continues to be active with numerous variants identified over the years. The ransomware typically targets Windows operating systems, and it is distributed through multiple infection vectors, including malicious email attachments, compromised Remote Desktop Protocol (RDP), and exploit kits.</summary></entry><entry><title type="html">Malware analysis report: Babuk ransomware</title><link href="http://localhost:4001/threat-hunting/2023/06/15/malware-analysis-babuk.html" rel="alternate" type="text/html" title="Malware analysis report: Babuk ransomware" /><published>2023-06-15T05:00:00+03:00</published><updated>2023-06-15T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/06/15/malware-analysis-babuk</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/06/15/malware-analysis-babuk.html">&lt;p&gt;&lt;strong&gt;Babuk&lt;/strong&gt; is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread of new ransomware variants.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/5/babuk.png&quot; alt=&quot;apt29&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -873,7 +1697,7 @@ SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 &lt;a href=&quot;https://app.any.run/tasks/2eaffd86-79a7-4752-835b-b7815f9cd44b/&quot;&gt;Babuk sample&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
-&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">Babuk is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread of new ransomware variants.</summary></entry><entry><title type="html">Malware analysis report: SNOWYAMBER (+APT29 related malwares)</title><link href="http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29.html" rel="alternate" type="text/html" title="Malware analysis report: SNOWYAMBER (+APT29 related malwares)" /><published>2023-06-02T05:00:00+03:00</published><updated>2023-06-02T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/06/02/malware-analysis-apt29.html">&lt;p&gt;This report provides a comprehensive analysis of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SNOWYAMBER&lt;/code&gt; dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APT29&lt;/code&gt;. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations.&lt;/p&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">Babuk is a ransomware family that was first discovered in early 2021. It quickly became infamous, especially among corporate networks, for its ability to quickly encrypt files and demand ransom. However, the decisive moment in its development was the leak of the source code, which subsequently contributed to the spread of new ransomware variants.</summary></entry><entry><title type="html">Malware analysis report: SNOWYAMBER (+APT29 related malwares)</title><link href="http://localhost:4001/threat-hunting/2023/06/02/malware-analysis-apt29.html" rel="alternate" type="text/html" title="Malware analysis report: SNOWYAMBER (+APT29 related malwares)" /><published>2023-06-02T05:00:00+03:00</published><updated>2023-06-02T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/06/02/malware-analysis-apt29</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/06/02/malware-analysis-apt29.html">&lt;p&gt;This report provides a comprehensive analysis of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SNOWYAMBER&lt;/code&gt; dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;APT29&lt;/code&gt;. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/4/APT29.png&quot; alt=&quot;apt29&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -1337,7 +2161,7 @@ SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 &lt;a href=&quot;https://cocomelonc.github.io/investigation/2022/04/11/malw-inv-conti-2.html&quot;&gt;Conti ransomware source code investigation - part 2&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
-&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">This report provides a comprehensive analysis of the SNOWYAMBER dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group APT29. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations.</summary></entry><entry><title type="html">Malware source code investigation: AsyncRAT</title><link href="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html" rel="alternate" type="text/html" title="Malware source code investigation: AsyncRAT" /><published>2023-05-19T05:00:00+03:00</published><updated>2023-05-19T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/19/malware-src-asyncrat.html">&lt;p&gt;AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.&lt;/p&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">This report provides a comprehensive analysis of the SNOWYAMBER dropper, and it’s modifications, a sophisticated piece of malware attributed to the Advanced Persistent Threat group APT29. The group is believed to be tied to the Russian government and has been linked to numerous cyber espionage operations.</summary></entry><entry><title type="html">Malware source code investigation: AsyncRAT</title><link href="http://localhost:4001/threat-hunting/2023/05/19/malware-src-asyncrat.html" rel="alternate" type="text/html" title="Malware source code investigation: AsyncRAT" /><published>2023-05-19T05:00:00+03:00</published><updated>2023-05-19T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/05/19/malware-src-asyncrat</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/05/19/malware-src-asyncrat.html">&lt;p&gt;AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/3/asyncrat.png&quot; alt=&quot;asyncrat&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -1549,7 +2373,7 @@ SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 &lt;a href=&quot;https://research.splunk.com/stories/asyncrat/&quot;&gt;https://research.splunk.com/stories/asyncrat/&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
-&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.</summary></entry><entry><title type="html">Malware analysis report: WinDealer (LuoYu Threat Group)</title><link href="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html" rel="alternate" type="text/html" title="Malware analysis report: WinDealer (LuoYu Threat Group)" /><published>2023-05-08T05:00:00+03:00</published><updated>2023-05-08T05:00:00+03:00</updated><id>http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer</id><content type="html" xml:base="http://localhost:4000/threat-hunting/2023/05/08/malware-analysis-windealer.html">&lt;p&gt;WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.&lt;/p&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">AsyncRAT is a Remote Access Trojan (RAT) designed to remotely monitor and control infected systems. It is free, open-source, and often used by cybercriminals for malicious purposes, such as stealing sensitive information, installing more malware, or performing DDoS attacks.</summary></entry><entry><title type="html">Malware analysis report: WinDealer (LuoYu Threat Group)</title><link href="http://localhost:4001/threat-hunting/2023/05/08/malware-analysis-windealer.html" rel="alternate" type="text/html" title="Malware analysis report: WinDealer (LuoYu Threat Group)" /><published>2023-05-08T05:00:00+03:00</published><updated>2023-05-08T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/05/08/malware-analysis-windealer</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/05/08/malware-analysis-windealer.html">&lt;p&gt;WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/2/2023-05-08_12-08.png&quot; alt=&quot;windealer&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -2030,7 +2854,7 @@ SHA-256 sum: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
-&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.</summary></entry><entry><title type="html">Welcome to our cybersecurity blog</title><link href="http://localhost:4000/tutorial/2023/05/07/welcome.html" rel="alternate" type="text/html" title="Welcome to our cybersecurity blog" /><published>2023-05-07T05:00:00+03:00</published><updated>2023-05-07T05:00:00+03:00</updated><id>http://localhost:4000/tutorial/2023/05/07/welcome</id><content type="html" xml:base="http://localhost:4000/tutorial/2023/05/07/welcome.html">&lt;p&gt;Welcome to our cybersecurity blog!&lt;/p&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">WinDealer is a type of malware that is used for financial fraud and theft. It is a banking Trojan that is designed to steal sensitive financial information, such as login credentials, credit card numbers, and other personal information from victims’ computers.</summary></entry><entry><title type="html">Welcome to our cybersecurity blog</title><link href="http://localhost:4001/tutorial/2023/05/07/welcome.html" rel="alternate" type="text/html" title="Welcome to our cybersecurity blog" /><published>2023-05-07T05:00:00+03:00</published><updated>2023-05-07T05:00:00+03:00</updated><id>http://localhost:4001/tutorial/2023/05/07/welcome</id><content type="html" xml:base="http://localhost:4001/tutorial/2023/05/07/welcome.html">&lt;p&gt;Welcome to our cybersecurity blog!&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/1/welcome.png&quot; alt=&quot;welcome&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
