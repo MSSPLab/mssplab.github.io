@@ -1,4 +1,152 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4001/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4001/" rel="alternate" type="text/html" /><updated>2023-07-16T19:07:11+03:00</updated><id>http://localhost:4001/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware source code investigation: BlackLotus - part 1</title><link href="http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus.html" rel="alternate" type="text/html" title="Malware source code investigation: BlackLotus - part 1" /><published>2023-07-15T05:00:00+03:00</published><updated>2023-07-15T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus.html">&lt;p&gt;BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4001/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4001/" rel="alternate" type="text/html" /><updated>2023-08-17T01:46:43+03:00</updated><id>http://localhost:4001/feed.xml</id><title type="html">MSSP Lab</title><subtitle>Cybersecurity, red team, blue team, hacking</subtitle><author><name>MSSP Lab</name></author><entry><title type="html">Malware source code investigation: BlackLotus - part 2</title><link href="http://localhost:4001/threat-hunting/2023/08/16/malware-src-blacklotus-2.html" rel="alternate" type="text/html" title="Malware source code investigation: BlackLotus - part 2" /><published>2023-08-16T01:00:00+03:00</published><updated>2023-08-16T01:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/08/16/malware-src-blacklotus-2</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/08/16/malware-src-blacklotus-2.html">&lt;p&gt;BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/blacklotus.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The source code for the BlackLotus UEFI bootkit has been published on &lt;a href=&quot;https://github.com/ldpreload/BlackLotus&quot;&gt;GitHub&lt;/a&gt; on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;July, 12, 2023&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/9/2023-07-16_12-08.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We are continue our small &lt;a href=&quot;/threat-hunting/2023/07/15/malware-src-blacklotus.html&quot;&gt;research&lt;/a&gt; and today investigate the another modules of &lt;em&gt;BlackLotus&lt;/em&gt; and highlights the main features.&lt;/p&gt;
+
+&lt;h3 id=&quot;bot-logic-install&quot;&gt;Bot logic: Install&lt;/h3&gt;
+
+&lt;p&gt;As we wrote before, a bot in this context refers to a device with the Agent installed.&lt;/p&gt;
+
+&lt;p&gt;First of all, we paid attention to files &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;install.h&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;install.c&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-16_23-45.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The provided source code appears to be part of a malware installation process. This code is designed to install a bot or malicious payload onto a system and set up persistence. Let’s break down the logic step by step:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GenerateBotFileName(PDWORD Seed)&lt;/code&gt; - This function generates a bot filename based on a given seed using a simple pseudo-random number generator algorithm. It multiplies the seed by a constant value (1664525) to calculate the new seed, which is then returned:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-16_23-48.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotFileName(PDWORD Seed)&lt;/code&gt; - Calls the GenerateBotFileName function to obtain the bot filename seed. Converts the seed to hexadecimal format and constructs the bot filename as a string. Returns the bot filename as a wide string &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(LPWSTR)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-16_23-49.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotDirectory()&lt;/code&gt; - Calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotFileName&lt;/code&gt; to get the bot filename. Constructs the bot directory path by concatenating the AppData directory path with the bot filename. Returns the bot directory path as a wide string &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(LPWSTR)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-16_23-50.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotPath()&lt;/code&gt; - Calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotFileName&lt;/code&gt; to get the bot filename. Calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotDirectory&lt;/code&gt; to get the bot directory path. Constructs the full bot executable path by concatenating the bot directory path, a backslash, the bot filename, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;.exe&quot;&lt;/code&gt;. Returns the full bot executable path as a wide string &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(LPWSTR)&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-16_23-59.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IsSystemInfected()&lt;/code&gt; - Calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotPath&lt;/code&gt; to get the bot executable path. Compares the obtained bot executable path with a global variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_BotInstallPath&lt;/code&gt;. Returns whether the system is infected (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TRUE&lt;/code&gt;) or not (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FALSE&lt;/code&gt;) based on the comparison:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_00-00.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InstallBot()&lt;/code&gt; - Calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotDirectory&lt;/code&gt; to get the bot directory path. Calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetBotPath&lt;/code&gt; to get the full bot executable path.Converts DOS-style paths to NT-style paths using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DosPathToNtPath&lt;/code&gt; function. Creates the bot directory using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FileCreateDirectory&lt;/code&gt;. Copies the current process executable (malware) to the bot executable path. Sets a global variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_BotInstallPath&lt;/code&gt; to the bot executable path. Returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TRUE&lt;/code&gt; if installation is successful, otherwise &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FALSE&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_00-01.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UninstallBot()&lt;/code&gt; - This function is incomplete and does not contain the logic for uninstallation.&lt;/p&gt;
+
+&lt;h3 id=&quot;bot-logic-anti-debug&quot;&gt;Bot logic: Anti-debug&lt;/h3&gt;
+
+&lt;p&gt;Next files, are &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;antidebug.h&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;antidebug.c&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;The provided source code seems to be focused on anti-debugging techniques, specifically checking whether the current process is being debugged. Also it’s obvious from the file name:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_00-08.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IsBeingDebuggedAlt()&lt;/code&gt; - This function is intended to check whether the current process is being debugged by an external debugger. It retrieves the Process Environment Block (PEB) using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetPeb()&lt;/code&gt; function. It checks the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BeingDebugged&lt;/code&gt; field within the PEB to determine whether the process is being debugged.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IsBeingDebugged()&lt;/code&gt; -  This function is an entry point for checking if the current process is being debugged. It calls the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IsBeingDebuggedAlt()&lt;/code&gt; function to perform the check. If the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IsBeingDebuggedAlt()&lt;/code&gt; function returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TRUE&lt;/code&gt;, indicating that the process is being debugged, the function returns an error code &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ERROR_UNSUCCESSFULL&lt;/code&gt;. If the process is not being debugged, the function returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NO_ERROR&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This code attempts to detect if the current process is being debugged using an alternative method by examining the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BeingDebugged&lt;/code&gt; field in the Process Environment Block (PEB). Anti-debugging techniques like this are used by malware authors to make it harder for security analysts and researchers to analyze or debug their malicious code.&lt;/p&gt;
+
+&lt;h3 id=&quot;bot-source-code-communication-functionality&quot;&gt;Bot source code: Communication functionality&lt;/h3&gt;
+
+&lt;p&gt;The source code of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http.c&lt;/code&gt; appears to be related to HTTP communication functionality for the BlackLotus bootkit. This code seems to handle &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTP&lt;/code&gt; connections, sending &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;POST&lt;/code&gt; requests, and receiving data from a remote server. Let’s break down the code:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HttpConnect(LPSTR UserAgent, LPSTR Host, WORD Port, DWORD Flags)&lt;/code&gt; -  This function establishes an HTTP connection to a specified host. It uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InternetOpenW&lt;/code&gt; API to create an internet session with the specified user agent. Then, it uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InternetConnectA&lt;/code&gt; to establish a connection to the specified host on the specified port (port &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;80&lt;/code&gt; in this case):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_00-54.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HttpRequest(HINTERNET Connect, BOOL bPost, LPSTR URI, LPSTR Referrer, PCHAR Data, DWORD Flags)&lt;/code&gt; -  This function sends an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTP&lt;/code&gt; request using the established connection. It uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HttpOpenRequestA&lt;/code&gt; to create an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTP&lt;/code&gt; request to a specified URI. The method used can be &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;POST&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GET&lt;/code&gt; depending on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bPost&lt;/code&gt; parameter. It uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HttpSendRequestA&lt;/code&gt; to send the request with the specified headers and data:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-00.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HttpReceiveData(HINTERNET Request, PCHAR Buffer)&lt;/code&gt; -  This function receives data from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTP&lt;/code&gt; response. It uses &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InternetReadFile&lt;/code&gt; to read data from the response into a buffer. The function appends the received data to the provided buffer.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-01.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HttpPostRequest(PCHAR Host, PCHAR URI, PCHAR Data, PCHAR Response)&lt;/code&gt; -  This function is a higher-level wrapper for making an HTTP &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;POST&lt;/code&gt; request. It calls HttpConnect to establish an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTP&lt;/code&gt; connection to the specified host. Then, it calls HttpRequest to send a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;POST&lt;/code&gt; request with the provided data. After sending the request, it calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HttpReceiveData&lt;/code&gt; to read and store the response data:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-02.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Overall, this code appears to facilitate communication between the malware and a remote server through HTTP requests. It’s worth noting that malware often employs HTTP communication to send and receive commands, upload or download files, and exfiltrate data. Analyzing such code requires an understanding of HTTP communication mechanisms and malware analysis techniques.&lt;/p&gt;
+
+&lt;h3 id=&quot;bot-injection-techniques&quot;&gt;Bot: Injection techniques&lt;/h3&gt;
+
+&lt;p&gt;The next file is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inject.c&lt;/code&gt; and it’s interesting. It’s started from function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GetImageBase(LPVOID ProcessAddress)&lt;/code&gt; which is used to retrieve the base address of a module within a process. It iterates backward in memory from the provided &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ProcessAddress&lt;/code&gt; to find the base address of the module by locating the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IMAGE_DOS_HEADER&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IMAGE_NT_HEADERS&lt;/code&gt; structures. The function returns the base address of the module:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-09.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ProcessRelocation(PIMAGE_BASE_RELOCATION Relocation, DWORD ImageBase, DWORD Delta, DWORD Size)&lt;/code&gt; - This function performs relocations for a loaded module within a process:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-10.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InjectData(HANDLE Process, LPVOID Data, DWORD Size)&lt;/code&gt; allocates memory in a remote process and writes data into that memory:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-13.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As we can see, it uses “classic” combination &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VirtualAllocEx&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WriteProcessMemory&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InjectCode(HANDLE Process, LPVOID Function)&lt;/code&gt; - function injects a code block into a remote process. It obtains the base address and size of the function’s module, creates a file mapping, maps the remote process’ memory, and performs relocations:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-15.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It calculates the new address of the injected function and returns it.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InjectBot(DWORD ProcessId, LPTHREAD_START_ROUTINE Thread)&lt;/code&gt; function injects a thread into a remote process, starting execution at the specified Thread function:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-18.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It opens the target process with specific access rights. It calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;InjectCode&lt;/code&gt; to inject the Thread function into the remote process. It creates a remote thread within the target process to execute the injected code.&lt;/p&gt;
+
+&lt;h3 id=&quot;bot-reporting&quot;&gt;Bot: Reporting&lt;/h3&gt;
+
+&lt;p&gt;The provided source code appears to be related to the reporting functionality of the BlackLotus bootkit. This module is responsible for sending periodic reports to command and control (C2) servers about the status and information of the infected system:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-20.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ProcessServerResponse(CONST PCHAR Response)&lt;/code&gt; function processes the response received from the C2 server after reporting:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-39.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ReportThread()&lt;/code&gt; - This function is executed as a thread and handles the periodic reporting to C2 servers. It constructs a report data string using information such as infection type, bot GUID, OS, architecture, and username.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-40.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StartReportThread()&lt;/code&gt; starts the reporting thread by creating a new thread that executes &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ReportThread&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/10/2023-08-17_01-42.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That’s all today. In the next part we will investigate the most interesting part: Bootkit logic.&lt;/p&gt;
+
+&lt;p&gt;We hope this post spreads awareness to the blue teamers of this interesting malware techniques, and adds a weapon to the red teamers arsenal.&lt;/p&gt;
+
+&lt;p&gt;By Cyber Threat Hunters from MSSPLab:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/zhassulan-zhussupov-5a347419b/&quot;&gt;@cocomelonc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linkedin.com/in/aruzhan-kaldybek-775735226&quot;&gt;@wqkasper&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;/threat-hunting/2023/07/15/malware-src-blacklotus.html&quot;&gt;Malware source code investigation: BlackLotus - part 1&lt;/a&gt;   &lt;br /&gt;
+&lt;a href=&quot;https://github.com/ldpreload/BlackLotus&quot;&gt;https://github.com/ldpreload/BlackLotus&lt;/a&gt;      &lt;br /&gt;
+&lt;a href=&quot;https://malpedia.caad.fkie.fraunhofer.de/details/win.blacklotus&quot;&gt;https://malpedia.caad.fkie.fraunhofer.de/details/win.blacklotus&lt;/a&gt;     &lt;br /&gt;
+&lt;a href=&quot;https://twitter.com/threatintel/status/1679906101838356480&quot;&gt;https://twitter.com/threatintel/status/1679906101838356480&lt;/a&gt;    &lt;br /&gt;
+&lt;a href=&quot;https://twitter.com/TheCyberSecHub/status/1680044350820999168&quot;&gt;https://twitter.com/TheCyberSecHub/status/1680044350820999168&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for your time happy hacking and good bye!       &lt;br /&gt;
+&lt;em&gt;All drawings and screenshots are MSSPLab’s&lt;/em&gt;&lt;/p&gt;</content><author><name>MSSP Lab</name></author><category term="threat-hunting" /><category term="blueteam" /><category term="malware" /><category term="malwareanalysis" /><summary type="html">BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system.</summary></entry><entry><title type="html">Malware source code investigation: BlackLotus - part 1</title><link href="http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus.html" rel="alternate" type="text/html" title="Malware source code investigation: BlackLotus - part 1" /><published>2023-07-15T05:00:00+03:00</published><updated>2023-07-15T05:00:00+03:00</updated><id>http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus</id><content type="html" xml:base="http://localhost:4001/threat-hunting/2023/07/15/malware-src-blacklotus.html">&lt;p&gt;BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/9/blacklotus.png&quot; alt=&quot;blacklotus&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 

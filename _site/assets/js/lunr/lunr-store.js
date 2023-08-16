@@ -52,4 +52,10 @@ var store = [{
         "tags": ["blueteam","malware","malwareanalysis"],
         "url": "/threat-hunting/2023/07/15/malware-src-blacklotus.html",
         "teaser": "/assets/images/9/blacklotus.png"
+      },{
+        "title": "Malware source code investigation: BlackLotus - part 2",
+        "excerpt":"BlackLotus is a UEFI bootkit that targets Windows and is capable of evading security software, persisting once it has infected a system, bypassing Secure Boot on fully patched installations of Windows 11, and executing payloads with the highest level of privileges available in the operating system. The source code for...","categories": ["threat-hunting"],
+        "tags": ["blueteam","malware","malwareanalysis"],
+        "url": "/threat-hunting/2023/08/16/malware-src-blacklotus-2.html",
+        "teaser": "/assets/images/9/blacklotus.png"
       }]
