@@ -17,12 +17,12 @@ minimal_mistakes_skin    : "dark" # "default", "air", "aqua", "contrast", "dark"
 
 # Site Settings
 locale                   : "en-US"
-title                    : "MSSP Lab"
+title                    : "MSSP Research Lab"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
-name                     : "MSSP Lab"
+name                     : "MSSP Research Lab"
 description              : "Cybersecurity, red team, blue team, hacking"
-url                      : "https://MSSPLab.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : "https://mssplab.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
@@ -71,7 +71,7 @@ naver_site_verification  :
 
 # Social Sharing
 twitter:
-  username               : "MSSP Lab"
+  username               : "MSSP Research Lab"
 facebook:
   username               :
   app_id                 :
@@ -94,8 +94,8 @@ analytics:
 
 # Site Author
 author:
-  name             : "MSSP Lab"
-  avatar           : "/assets/images/mssp-logo-white.png"
+  name             : "MSSP Research Lab"
+  avatar           : "/assets/images/logo-new.png"
   bio              : "cybersec lab. research and development"
   email            :
   links:
