@@ -1,6 +1,6 @@
 ---
 title: "HackTheBox Certified Bug Bounty Hunter Review"
-date:  2024-07-05 00:03:00 +0300
+date:  2024-07-04 00:03:00 +0500
 header:
   teaser: "/assets/images/18/image_2024-07-04_14-56-48.png"
 categories: 
