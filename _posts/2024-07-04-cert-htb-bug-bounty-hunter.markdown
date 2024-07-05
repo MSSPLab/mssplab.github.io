@@ -110,6 +110,8 @@ To summarize this course and exam:
 - The course and material in the course are quite good and understandable. `10/10`      
 - The exam is interesting but with pitfalls XD. `10/10`     
 
+![htb](/assets/images/18/image_2024-07-04_14-56-48.png){:class="img-responsive"}      
+
 > P.S. In parallel with passing the exam from HTB, I took exams from the university and had to set priorities.... That's why I ended up in the summer semester at the university XD.
 
 Good luck to everyone and think outside the box!!!
